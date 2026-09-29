@@ -154,6 +154,150 @@ form.add input,form.add select{font:inherit;padding:10px;border:2px solid var(--
 .hint{background:var(--red-soft);color:var(--red-deep);border-radius:12px;padding:10px 12px;font-size:.9rem;font-weight:700}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
+<title>Nawaf's STEM Portal</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&display=swap">
+<style>
+:root{
+  --red:#C8102E; --red-deep:#8E0B22; --red-soft:#FBE7EA; --black:#141215; --ink:#1E1B1F;
+  --bg:#F8F4F3; --card:#FFFFFF; --muted:#6E6468; --line:#E9DEDF; --gold:#D4A937; --green:#2E8B57; --sky:#BFE3F5;
+  --shadow:0 6px 18px rgba(20,18,21,.10);
+  --font-d:"Fredoka","Nunito",system-ui,sans-serif; --font-b:"Nunito",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  color-scheme:dark; --bg:#141215; --card:#211D21; --ink:#F4EDEE; --muted:#B4A6AA; --line:#3A3237; --red-soft:#3B141C; --sky:#2A3F52; --shadow:0 6px 18px rgba(0,0,0,.45);
+}}
+:root[data-theme="dark"]{ color-scheme:dark; --bg:#141215; --card:#211D21; --ink:#F4EDEE; --muted:#B4A6AA; --line:#3A3237; --red-soft:#3B141C; --sky:#2A3F52; --shadow:0 6px 18px rgba(0,0,0,.45); }
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-b);font-size:16px;line-height:1.5}
+h1,h2,h3,h4{font-family:var(--font-d);margin:0;text-wrap:balance;line-height:1.15}
+button{font-family:inherit;font-size:inherit;cursor:pointer}
+.wrap{max-width:960px;margin:0 auto;padding-inline:16px;padding-block:0 40px}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--black);color:#fff;padding:10px 0}
+.top .wrap{display:flex;align-items:center;gap:12px;padding-block:0}
+.avatar{width:48px;height:48px;border-radius:50%;border:3px solid var(--red);object-fit:cover;flex:none}
+.brand{font-family:var(--font-d);font-size:1.25rem;font-weight:600}
+.brand small{display:block;font-family:var(--font-b);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:#D9CFD2;font-weight:700}
+.xp{margin-left:auto;text-align:right;font-variant-numeric:tabular-nums}
+.xp b{font-family:var(--font-d);font-size:1.3rem;color:var(--gold)}
+.xp span{display:block;font-size:.72rem;color:#D9CFD2;text-transform:uppercase;letter-spacing:.08em}
+.modeBtn{background:var(--red);color:#fff;border:0;border-radius:999px;padding:8px 14px;font-weight:800}
+.modeBtn:focus-visible,button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.levelbar{display:flex;align-items:center;gap:12px;margin:18px 0 8px;flex-wrap:wrap}
+.levelbar h2{font-size:1.6rem}
+.bar{flex:1;min-width:160px;height:14px;background:var(--line);border-radius:999px;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--red-deep),var(--red));border-radius:999px;transition:width .5s}
+.lvl{font-weight:800;color:var(--muted);font-size:.9rem;font-variant-numeric:tabular-nums}
+.map{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:14px}
+@media(min-width:640px){.map{grid-template-columns:repeat(3,1fr)}}
+.mission{background:var(--card);border-radius:22px;padding:18px;box-shadow:var(--shadow);border:2px solid transparent;text-align:left;color:var(--ink);display:flex;flex-direction:column;gap:8px;position:relative;transition:transform .15s}
+.mission:hover{transform:translateY(-3px)}
+.mission.done{border-color:var(--green)}
+.mapGroup{grid-column:1/-1;font-size:1rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:8px;border-bottom:2px solid var(--line);padding-bottom:4px}
+.mission .num{position:absolute;top:-10px;left:14px;background:var(--black);color:#fff;font-family:var(--font-d);font-size:.8rem;padding:2px 10px;border-radius:999px}
+.mission .ico{font-size:2.2rem;line-height:1}
+.mission h3{font-size:1.1rem}
+.mission p{margin:0;font-size:.85rem;color:var(--muted)}
+.pill{align-self:flex-start;font-size:.72rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:var(--red-soft);color:var(--red)}
+.mission.done .pill{background:#E4F3EA;color:var(--green)}
+.mission .stars{color:var(--gold);letter-spacing:2px}
+.badges{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+.badge{display:flex;align-items:center;gap:8px;background:var(--card);border:2px solid var(--line);border-radius:14px;padding:8px 12px;font-weight:800;font-size:.85rem}
+.badge.earned{border-color:var(--gold);background:linear-gradient(180deg,var(--card),var(--red-soft));animation:pop .5s}
+.badge:not(.earned){filter:grayscale(1);opacity:.55}
+.badge .b{font-size:1.4rem}
+@keyframes pop{0%{transform:scale(.6)}70%{transform:scale(1.1)}100%{transform:scale(1)}}
+section{margin-top:28px}
+section h2{font-size:1.35rem;margin-bottom:6px}
+.sub{color:var(--muted);margin:0 0 10px;font-size:.9rem}
+.panel{background:var(--card);border-radius:22px;padding:22px;box-shadow:var(--shadow);margin-top:16px}
+.back{background:none;border:0;color:var(--red);font-weight:800;padding:0;margin-bottom:8px}
+/* explainer */
+.lab{background:var(--bg);border:2px solid var(--line);border-radius:18px;padding:14px;margin-top:12px}
+.lab h4{font-size:1rem;margin-bottom:8px;color:var(--red)}
+.lab svg,.lab canvas{width:100%;max-width:100%;height:auto;display:block;border-radius:12px}
+.ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
+.ctl label{font-weight:800;font-size:.85rem;display:flex;align-items:center;gap:6px}
+.ctl input[type=range]{accent-color:var(--red);width:150px;max-width:100%}
+.sbtn{background:var(--black);color:#fff;border:0;border-radius:999px;padding:8px 14px;font-weight:800;font-size:.9rem}
+.sbtn.alt{background:var(--red)}
+.sbtn.on{outline:3px solid var(--gold)}
+.readout{font-family:var(--font-d);font-size:1.05rem;margin-top:8px;min-height:1.5em;color:var(--ink)}
+.readout b{color:var(--red)}
+/* lesson cards */
+.lesson{margin-top:14px}
+.lcard{background:var(--red-soft);border-radius:18px;padding:16px 18px;min-height:110px;animation:slide .35s}
+@keyframes slide{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
+.lcard h4{font-size:1.15rem;margin-bottom:6px}
+.lcard p{margin:0;font-size:1.02rem;max-width:62ch}
+.dots{display:flex;gap:6px;margin:10px 0}
+.dots i{width:10px;height:10px;border-radius:50%;background:var(--line)}
+.dots i.on{background:var(--red)}.dots i.seen{background:var(--red-deep);opacity:.5}
+.steps{display:grid;gap:10px;margin:14px 0}
+.step{display:flex;gap:12px;background:var(--red-soft);border-radius:14px;padding:12px 14px}
+.step b{font-family:var(--font-d);color:var(--red);flex:none;font-size:1.2rem}
+.q{margin-top:18px;padding-top:16px;border-top:2px dashed var(--line)}
+.q h3{font-size:1.1rem;margin-bottom:10px}
+.opts{display:grid;gap:8px}
+.opt{text-align:left;background:var(--bg);border:2px solid var(--line);border-radius:14px;padding:12px 14px;color:var(--ink);font-weight:700}
+.opt:hover{border-color:var(--red)}
+.opt.right{border-color:var(--green);background:#E4F3EA;color:#14532d;animation:pop .4s}
+.opt.wrong{border-color:var(--red);background:var(--red-soft);animation:shake .4s}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.fb{margin-top:8px;font-weight:800;min-height:1.4em}
+.fb.ok{color:var(--green)}.fb.no{color:var(--red)}
+.why{margin-top:6px;font-size:.95rem;background:var(--bg);border-left:4px solid var(--gold);padding:8px 12px;border-radius:8px}
+.dnd{display:grid;gap:12px;margin-top:10px}
+.pool{display:flex;flex-wrap:wrap;gap:8px;min-height:44px;padding:8px;border:2px dashed var(--line);border-radius:14px}
+.chip{background:var(--black);color:#fff;border-radius:999px;padding:6px 12px;font-weight:800;cursor:grab;border:0;user-select:none}
+.chip.sel{outline:3px solid var(--gold)}
+.bins{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px}
+.bin{min-height:90px;border:2px solid var(--line);border-radius:14px;padding:8px;display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.bin.over{border-color:var(--red);background:var(--red-soft)}
+.bin.ok{border-color:var(--green)}.bin.bad{border-color:var(--red)}
+.bin h4{margin:0;font-family:var(--font-d);font-size:.95rem;width:100%;text-align:center}
+.btn{background:var(--red);color:#fff;border:0;border-radius:999px;padding:12px 22px;font-weight:800;font-size:1rem;box-shadow:0 4px 0 var(--red-deep)}
+.btn:active{transform:translateY(2px);box-shadow:0 2px 0 var(--red-deep)}
+.btn.ghost{background:transparent;color:var(--red);border:2px solid var(--red);box-shadow:none}
+.btn:disabled{opacity:.4;cursor:default}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;align-items:center}
+.score{font-family:var(--font-d);font-size:1.3rem}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(120%);background:var(--black);color:#fff;padding:14px 20px;border-radius:16px;font-weight:800;box-shadow:var(--shadow);transition:transform .35s;z-index:9;text-align:center;max-width:90vw}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast b{color:var(--gold)}
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:8}
+.confetti i{position:absolute;top:-10px;width:10px;height:14px;border-radius:2px;animation:fall 1.8s linear forwards}
+@keyframes fall{to{transform:translateY(105vh) rotate(720deg);opacity:.6}}
+/* robot grid */
+.grid{display:grid;grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(5,1fr);gap:4px;max-width:320px;aspect-ratio:1;position:relative}
+.cell{background:var(--card);border-radius:8px;border:1px solid var(--line)}
+.cell.goal{background:var(--gold)}.cell.wall{background:var(--black)}
+.bot{position:absolute;width:20%;height:20%;display:flex;align-items:center;justify-content:center;font-size:1.8rem;transition:left .35s,top .35s}
+.prog{display:flex;flex-wrap:wrap;gap:6px;min-height:36px;margin-top:8px}
+.cmd{background:var(--red);color:#fff;border-radius:8px;padding:4px 10px;font-weight:800;font-size:.9rem}
+.cmd.loop{background:var(--gold);color:var(--black)}
+/* parent */
+.kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media(min-width:640px){.kpis{grid-template-columns:repeat(4,1fr)}}
+.kpi{background:var(--card);border-radius:16px;padding:14px;box-shadow:var(--shadow)}
+.kpi b{display:block;font-family:var(--font-d);font-size:1.8rem;color:var(--red);font-variant-numeric:tabular-nums}
+.kpi span{font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:800}
+table{width:100%;border-collapse:collapse;font-size:.92rem}
+th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line)}
+th{font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+td.n{font-variant-numeric:tabular-nums}
+.tag{font-size:.72rem;font-weight:800;padding:2px 8px;border-radius:999px;background:var(--line)}
+.tag.done{background:#E4F3EA;color:var(--green)}.tag.prog{background:#FFF3D6;color:#8A5A00}.tag.need{background:var(--red-soft);color:var(--red)}
+.tblwrap{overflow-x:auto}
+form.add{display:grid;gap:10px;margin-top:8px}
+form.add label{display:grid;gap:4px;font-weight:800;font-size:.85rem}
+form.add input,form.add select{font:inherit;padding:10px;border:2px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:480px){.two{grid-template-columns:1fr}}
+.note{font-size:.85rem;color:var(--muted)}
+.syncDot{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--line);vertical-align:middle}.syncDot.ok{background:var(--green)}.syncDot.err{background:var(--red)}.syncDot.busy{background:var(--gold)}
+.hint{background:var(--red-soft);color:var(--red-deep);border-radius:12px;padding:10px 12px;font-size:.9rem;font-weight:700}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
 </head>
 <body>
 <div class="top"><div class="wrap">
@@ -454,6 +598,21 @@ satellites(el){
   el.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{mode=b.dataset.o;el.querySelectorAll('[data-o]').forEach(x=>x.classList.remove('on'));b.classList.add('on');el.querySelector('#stRead').innerHTML=info[mode]});
   el.querySelector('#stRead').innerHTML=info.low;go();el._stop=()=>cancelAnimationFrame(raf);
 },
+gears(el){
+  el.innerHTML=`<h4>Lab: mesh two gears and count the turns</h4><svg viewBox="0 0 400 190" id="gsvg"></svg>
+  <div class="ctl"><label>Driver teeth <input type="range" id="ta" min="6" max="24" step="2" value="12"></label><label>Follower teeth <input type="range" id="tb" min="6" max="24" step="2" value="6"></label><button class="sbtn alt" id="turn">Turn the driver once</button><button class="sbtn" id="spin">Spin</button></div><div class="readout" id="gRead"></div>`;
+  const svg=el.querySelector('#gsvg'),read=el.querySelector('#gRead');let A=12,B=6,angA=0,raf,spinning=false;
+  const gearPath=(cx,cy,n,r)=>{const ro=r+6,ri=r-2;let d='';for(let i=0;i<n;i++){const a0=i*2*Math.PI/n,a1=a0+Math.PI/n*0.5,a2=a0+Math.PI/n,a3=a0+Math.PI/n*1.5;d+=(i?'L':'M')+(cx+Math.cos(a0)*ri)+' '+(cy+Math.sin(a0)*ri)+' L'+(cx+Math.cos(a1)*ro)+' '+(cy+Math.sin(a1)*ro)+' L'+(cx+Math.cos(a2)*ro)+' '+(cy+Math.sin(a2)*ro)+' L'+(cx+Math.cos(a3)*ri)+' '+(cy+Math.sin(a3)*ri)+' '}return d+'Z'};
+  const draw=()=>{const rA=A*4,rB=B*4;const cx1=160-rB/2+8,cx2=cx1+rA+rB+4;const angB=-angA*A/B+Math.PI/B;
+    svg.innerHTML=`<g style="transform-origin:${cx1}px 95px;transform:rotate(${angA}rad)"><path d="${gearPath(cx1,95,A,rA)}" fill="#C8102E"/><circle cx="${cx1}" cy="95" r="6" fill="#fff"/><line x1="${cx1}" y1="95" x2="${cx1+rA-4}" y2="95" stroke="#fff" stroke-width="4" stroke-linecap="round"/></g>
+    <g style="transform-origin:${cx2}px 95px;transform:rotate(${angB}rad)"><path d="${gearPath(cx2,95,B,rB)}" fill="#141215"/><circle cx="${cx2}" cy="95" r="6" fill="#fff"/><line x1="${cx2}" y1="95" x2="${cx2+rB-4}" y2="95" stroke="#D4A937" stroke-width="4" stroke-linecap="round"/></g>
+    <text x="${cx1}" y="${95+rA+22}" font-size="12" text-anchor="middle" font-family="Nunito" font-weight="800" fill="#6E6468">driver · ${A} teeth</text><text x="${cx2}" y="${95+rB+22}" font-size="12" text-anchor="middle" font-family="Nunito" font-weight="800" fill="#6E6468">follower · ${B} teeth</text>`};
+  const explain=()=>{const g=(a,b)=>b?g(b,a%b):a;const d=g(A,B);read.innerHTML=`Driver <b>${A} teeth</b>, follower <b>${B} teeth</b>. One turn of the driver pushes ${A} teeth past. The follower has ${B} teeth, so it turns <b>${A} ÷ ${B} = ${(A/B%1?(A/B).toFixed(2):A/B)}</b> times. Ratio ${A/d}:${B/d}. ${A>B?'Small follower: turns faster (more speed, less force).':A<B?'Big follower: turns slower but with more force. Bikes use this for hills.':'Same size: same speed, opposite direction.'} Gears that touch always spin in <b>opposite</b> directions.`};
+  const upd=()=>{cancelAnimationFrame(raf);spinning=false;A=+el.querySelector('#ta').value;B=+el.querySelector('#tb').value;angA=0;draw();explain()};el.querySelector('#ta').oninput=upd;el.querySelector('#tb').oninput=upd;
+  el.querySelector('#turn').onclick=()=>{cancelAnimationFrame(raf);spinning=false;const start=angA,end=angA+2*Math.PI;let t=0;const f=()=>{t=Math.min(1,t+0.015);angA=start+(end-start)*t;draw();read.innerHTML=`Driver turned <b>${(t).toFixed(2)}</b> of a turn → follower turned <b>${(t*A/B).toFixed(2)}</b> turns`;if(t<1)raf=requestAnimationFrame(f);else explain()};f()};
+  el.querySelector('#spin').onclick=()=>{spinning=!spinning;cancelAnimationFrame(raf);const f=()=>{angA+=0.03;draw();if(spinning)raf=requestAnimationFrame(f)};if(spinning)f()};
+  upd();el._stop=()=>cancelAnimationFrame(raf);
+},
 design(el){
   el.innerHTML=`<h4>Lab: test your paper bridge</h4>
   <svg viewBox="0 0 400 150"><rect x="20" y="90" width="70" height="60" fill="#141215"/><rect x="310" y="90" width="70" height="60" fill="#141215"/><text x="35" y="130" font-size="12" fill="#fff" font-family="Nunito" font-weight="800">book</text><text x="325" y="130" font-size="12" fill="#fff" font-family="Nunito" font-weight="800">book</text>
@@ -486,7 +645,7 @@ const MODULES=[
   quiz:[{q:'Which state of matter keeps its own shape?',a:'Solid',w:['Liquid','Gas','Plasma'],e:'In a solid the particles are locked in a pattern, so the shape stays.'},
         {q:'When ice melts it turns into a…',a:'Liquid',w:['Gas','Solid','Rock'],e:'Melting is solid to liquid. Heat lets the particles slide past each other.'},
         {q:'Which state spreads out to fill a whole room?',a:'Gas',w:['Solid','Liquid','Sand'],e:'Gas particles have lots of space and move freely in every direction.'}]},
- {id:'machines',ico:'⚙️',title:'Simple Machines',subject:'Engineering',desc:'Levers, ramps, wheels and pulleys.',
+ {id:'machines',ico:'🛠️',title:'Simple Machines',subject:'Engineering',desc:'Levers, ramps, wheels and pulleys.',
   cards:[['Machines make work easier','A simple machine has few or no moving parts, but it changes how much force you need. It does not do the work for you; it lets you trade a small push over a long distance for a big push over a short one.'],
    ['The lever','A lever is a stiff bar that turns on a fixed point, the fulcrum. Put the fulcrum close to the heavy thing and a small push on the long end lifts it. A seesaw, a spoon flicking peas, and a bottle opener are levers. Try sliding the fulcrum in the lab.'],
    ['The inclined plane','A ramp. Pushing a box up a long ramp needs less force than lifting it straight up, because you spread the work over a longer path. Wheelchair ramps and mountain roads that zigzag are inclined planes.'],
@@ -727,6 +886,18 @@ const MODULES=[
         {q:'Where are SaudiSat satellites built?',a:'KACST in Riyadh',w:['On the Moon','In Jeddah\'s port','On the space station'],e:'KACST, the King Abdulaziz City for Science and Technology, builds Saudi satellites.'},
         {q:'What helps your phone know where you are?',a:'GPS satellites',w:['Weather satellites','The Moon','Wi-Fi from the Sun'],e:'GPS satellites send timing signals; your phone works out its position from them.'},
         {q:'Why do astronauts float on the space station?',a:'They are falling around Earth together with the station',w:['There is no gravity there','They are very light','The station has fans'],e:'Gravity is still strong; everything falls together, so nothing presses down.'}]},
+ {id:'gears',ico:'⚙️',title:'Gears',subject:'Engineering',desc:'Teeth, turns and ratios.',
+  cards:[['What is a gear?','A gear is a wheel with teeth. When two gears touch, the teeth lock together, so turning one gear turns the other. Gears are inside bikes, clocks, egg beaters, car engines and the wheels of a toy car.'],
+   ['Touching gears turn opposite ways','If the first gear turns clockwise, the gear it touches turns anticlockwise. Add a third gear and it turns clockwise again. Watch the two arrows in the lab.'],
+   ['Counting teeth','One turn of a gear pushes every one of its teeth past the touching point. A 12-tooth gear pushes 12 teeth past. The gear it touches must also move 12 teeth. If that gear has only 6 teeth, it must go around twice. That is the whole secret of gears.'],
+   ['The maths: gear ratio','Turns of the follower = driver teeth ÷ follower teeth. 12 ÷ 6 = 2 turns. 12 ÷ 4 = 3 turns. 8 ÷ 16 = one half of a turn. We write the ratio as 12:6, which simplifies to 2:1. Division, multiplication and fractions all live inside a gearbox.'],
+   ['Speed or force, not both','A big gear driving a small gear makes the small one spin faster but with less force. A small gear driving a big one turns it slowly but with more force. On a bike, low gear (big back cog) climbs hills; high gear (small back cog) goes fast on the flat.']],
+  quiz:[{q:'A gear with 12 teeth turns a gear with 6 teeth. One turn of the big gear turns the small gear…',a:'2 times',w:['Half a turn','6 times','1 time'],e:'12 teeth pushed past ÷ 6 teeth on the small gear = 2 turns.'},
+        {q:'Two gears are touching. The first turns clockwise. The second turns…',a:'Anticlockwise',w:['Clockwise','It does not turn','Up and down'],e:'Touching gears always turn in opposite directions.'},
+        {q:'A 10-tooth gear drives a 20-tooth gear. How many turns does the 20-tooth gear make for one turn of the driver?',a:'Half a turn',w:['2 turns','10 turns','20 turns'],e:'10 ÷ 20 = 1/2. The bigger gear turns slower.'},
+        {q:'Which ratio is the same as 12:6?',a:'2:1',w:['1:2','6:12','12:1'],e:'Divide both numbers by 6: 12:6 becomes 2:1.'},
+        {q:'To climb a steep hill on a bike you want…',a:'More force, so a big back gear',w:['More speed, so a small back gear','No gears','Square gears'],e:'A big back gear turns slowly but with more force, which is what a hill needs.'},
+        {q:'A gear with 8 teeth makes 3 full turns. How many teeth passed the touching point?',a:'24',w:['11','8','3'],e:'8 teeth per turn × 3 turns = 24 teeth. Multiplication!'}]},
  {id:'design',ico:'🏗️',title:'Engineering Design',subject:'Engineering',desc:'Ask, imagine, plan, build, test, improve.',
   cards:[['Engineers solve problems','An engineer is someone who designs things to solve a problem: a bridge, a water filter, a satellite. They do not guess. They follow a process so each try teaches them something.'],
    ['Shape beats material','A flat sheet of paper bends easily. Fold the same sheet into a zigzag or roll it into tubes and it can hold a toy car. Nothing about the paper changed, only its shape. Test all three in the lab.'],
@@ -737,7 +908,7 @@ const MODULES=[
         {q:'Folding paper into a triangle tube makes it…',a:'Stronger',w:['Weaker','Wetter','Louder'],e:'The shape spreads the weight along its edges instead of letting the flat sheet bend.'},
         {q:'Why should you change only ONE thing before testing again?',a:'So you know what made the difference',w:['Because paper is expensive','To finish faster','Because rules say so'],e:'If you change three things and it works, you do not know which change helped.'}]}
 ];
-const BADGES=[['🍎','Gravity Guru','forces'],['🧊','Matter Master','matter'],['⚙️','Machine Maker','machines'],['🌦️','Weather Watcher','earth'],['🦎','Desert Explorer','ecosystems'],['💻','Bug Buster','coding'],['🏗️','Master Engineer','design'],['🦋','Cycle Spotter','lifecycles'],['🧬','Trait Detective','traits'],['🐚','Fossil Hunter','fossils'],['🐜','Team Player','groups'],['✖️','Times Table Titan','multiply'],['🍫','Fraction Fan','fractions'],['📐','Tile Master','area'],['🕒','Time Keeper','time'],['⚖️','Measure Master','measure'],['📊','Data Detective','graphs'],['🧲','Magnet Master','magnets'],['🌍','Globe Trotter','climates'],['🌪️','Storm Ready','hazards'],['🔬','Fair Tester','fairtest'],['🎮','Game Coder','events'],['🌍','Sky Watcher','daynight'],['🪐','Planet Explorer','solar'],['🚀','Rocket Engineer','rockets'],['🛰️','Satellite Commander','satellites'],['🏆','STEM Champion','ALL']];
+const BADGES=[['🍎','Gravity Guru','forces'],['🧊','Matter Master','matter'],['🛠️','Machine Maker','machines'],['🌦️','Weather Watcher','earth'],['🦎','Desert Explorer','ecosystems'],['💻','Bug Buster','coding'],['🏗️','Master Engineer','design'],['🦋','Cycle Spotter','lifecycles'],['🧬','Trait Detective','traits'],['🐚','Fossil Hunter','fossils'],['🐜','Team Player','groups'],['✖️','Times Table Titan','multiply'],['🍫','Fraction Fan','fractions'],['📐','Tile Master','area'],['🕒','Time Keeper','time'],['⚖️','Measure Master','measure'],['📊','Data Detective','graphs'],['🧲','Magnet Master','magnets'],['🌍','Globe Trotter','climates'],['🌪️','Storm Ready','hazards'],['🔬','Fair Tester','fairtest'],['🎮','Game Coder','events'],['🌍','Sky Watcher','daynight'],['🪐','Planet Explorer','solar'],['🚀','Rocket Engineer','rockets'],['🛰️','Satellite Commander','satellites'],['⚙️','Gear Genius','gears'],['🏆','STEM Champion','ALL']];
 const XP_PER_Q=25,XP_BONUS=50,XP_LESSON=30;
 
 let state={progress:{},custom:{},time:{},log:[],savedAt:0};
