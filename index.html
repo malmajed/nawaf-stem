@@ -176,7 +176,7 @@ form.add input,form.add select{font:inherit;padding:10px;border:2px solid var(--
   <section><h2>Progress summary</h2><p class="sub">Dr. Almajed · Parent dashboard. <span class="syncDot off" id="syncDot"></span> <span id="syncStat">Cloud sync is off</span> <button class="sbtn" id="refreshBtn" style="padding:4px 10px;font-size:.8rem">Refresh</button></p><div class="kpis" id="kpis"></div></section>
   <section><h2>Modules</h2><div class="panel tblwrap" id="ptable"></div></section>
   <section><h2>Recent activity</h2><p class="sub">Every lesson, quiz answer and completed mission, newest first.</p><div class="panel tblwrap" id="plog"></div></section>
-  <section><h2>Cloud sync (Google Drive)</h2><p class="sub">Paste the web-app URL and key from your Apps Script deployment. Progress then saves to a Google Sheet in your Drive and loads on every device.</p>
+  <section><h2>Cloud sync (Google Drive)</h2><p class="sub">Already connected to the Nawaf STEM Progress sheet in your Google Drive. Only change these if you redeploy the script.</p>
     <div class="panel"><form class="add" id="syncForm"><label>Web app URL <input id="syncUrl" placeholder="https://script.google.com/macros/s/…/exec"></label><label>Key <input id="syncKey" placeholder="the SECRET you set in Code.gs"></label><div class="row" style="margin-top:4px"><button class="btn" type="submit">Save & connect</button><span class="note">Leave the URL empty to turn sync off.</span></div></form></div></section>
   <section><h2>Add a custom quiz question</h2><p class="sub">Appears in the mission you choose on Nawaf's next attempt.</p>
     <div class="panel"><form class="add" id="addQ">
@@ -745,7 +745,8 @@ try{const s=localStorage.getItem('nawaf-stem');if(s)state=Object.assign(state,JS
 function save(){state.savedAt=Date.now();try{localStorage.setItem('nawaf-stem',JSON.stringify(state))}catch(e){}schedulePush()}
 function logEvent(type,mod,detail){state.log=state.log||[];state.log.push({t:Date.now(),type,mod,detail});if(state.log.length>300)state.log=state.log.slice(-300)}
 /* ---------- cloud sync (Google Sheet via Apps Script) ---------- */
-let SYNC={url:'',key:''};try{SYNC=Object.assign(SYNC,JSON.parse(localStorage.getItem('nawaf-sync')||'{}'))}catch(e){}
+const SYNC_DEFAULT={url:'https://script.google.com/macros/s/AKfycbxeEUgpO3KxM1DfZXtqJdeVgtHjXlO7I3d77wq-TNNuO1TBLWi8unBJIBTzYvSuWUZwBg/exec',key:'nawaf-2026-red'};
+let SYNC=Object.assign({},SYNC_DEFAULT);try{const o=JSON.parse(localStorage.getItem('nawaf-sync')||'null');if(o&&o.url)SYNC=o}catch(e){}
 let pushT=null,syncStatus='off',parentMode=false;
 function setSyncStatus(s,msg){syncStatus=s;const el=document.getElementById('syncStat');if(el)el.innerHTML=msg;const dot=document.getElementById('syncDot');if(dot)dot.className='syncDot '+s}
 function schedulePush(){if(!SYNC.url)return;clearTimeout(pushT);pushT=setTimeout(pushState,1500)}
