@@ -24,3 +24,15 @@ From then on every lesson, quiz answer and completed mission is written to the s
 
 ## Updating the app
 Edit `index.html`, push to `main`. The iPad picks up the new version the next time it opens the app online.
+
+## D. Update the Google Sheet script (needed for photos, weekly email and large progress files)
+1. Open the sheet → Extensions → Apps Script. Select all, delete, paste the new `Code.gs` (keep your SECRET the same).
+2. Save. Then **Deploy → Manage deployments → ✏️ (edit) → Version: New version → Deploy**. The URL stays the same.
+3. For the weekly email: in the editor choose the function **setupWeeklyTrigger** in the dropdown next to Run, click **Run**, and authorise (it needs Gmail and Drive access). You get the first report at once, then every Friday 08:00 Riyadh time.
+
+## Features
+- 28 missions in English and Arabic (عربي button top-right; labs stay in English).
+- 🔊 on every card and question reads it aloud with the device voice.
+- Today's Challenge: 5 questions a day from completed missions, with a streak.
+- Lab notebook in Engineering missions: photos go to the Drive folder "Nawaf STEM Photos".
+- Parent view: progress, activity log, custom questions, cloud-sync status.
