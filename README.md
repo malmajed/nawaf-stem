@@ -31,8 +31,9 @@ Edit `index.html`, push to `main`. The iPad picks up the new version the next ti
 3. For the weekly email: in the editor choose the function **setupWeeklyTrigger** in the dropdown next to Run, click **Run**, and authorise (it needs Gmail and Drive access). You get the first report at once, then every Friday 08:00 Riyadh time.
 
 ## Features
-- 28 missions in English and Arabic (عربي button top-right; labs stay in English).
+- 40 missions in two tracks (STEM 27, Math 13) in English and Arabic (عربي button top-right; labs stay in English).
 - 🔊 on every card and question reads it aloud with the device voice.
 - Today's Challenge: 5 questions a day from completed missions, with a streak.
 - Lab notebook in Engineering missions: photos go to the Drive folder "Nawaf STEM Photos".
-- Parent view: progress, activity log, custom questions, cloud-sync status.
+- Track Tests: 20 questions per track, 80% earns a Certified badge; results in Parent view.
+- Parent view: progress, track tests, activity log, custom questions, cloud-sync status.
