@@ -1,0 +1,775 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Nawaf STEM">
+<meta name="theme-color" content="#141215">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<style>html,body{height:100%}body{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Nawaf's STEM Portal</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&display=swap">
+<style>
+:root{
+  --red:#C8102E; --red-deep:#8E0B22; --red-soft:#FBE7EA; --black:#141215; --ink:#1E1B1F;
+  --bg:#F8F4F3; --card:#FFFFFF; --muted:#6E6468; --line:#E9DEDF; --gold:#D4A937; --green:#2E8B57; --sky:#BFE3F5;
+  --shadow:0 6px 18px rgba(20,18,21,.10);
+  --font-d:"Fredoka","Nunito",system-ui,sans-serif; --font-b:"Nunito",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  color-scheme:dark; --bg:#141215; --card:#211D21; --ink:#F4EDEE; --muted:#B4A6AA; --line:#3A3237; --red-soft:#3B141C; --sky:#2A3F52; --shadow:0 6px 18px rgba(0,0,0,.45);
+}}
+:root[data-theme="dark"]{ color-scheme:dark; --bg:#141215; --card:#211D21; --ink:#F4EDEE; --muted:#B4A6AA; --line:#3A3237; --red-soft:#3B141C; --sky:#2A3F52; --shadow:0 6px 18px rgba(0,0,0,.45); }
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-b);font-size:16px;line-height:1.5}
+h1,h2,h3,h4{font-family:var(--font-d);margin:0;text-wrap:balance;line-height:1.15}
+button{font-family:inherit;font-size:inherit;cursor:pointer}
+.wrap{max-width:960px;margin:0 auto;padding-inline:16px;padding-block:0 40px}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--black);color:#fff;padding:10px 0}
+.top .wrap{display:flex;align-items:center;gap:12px;padding-block:0}
+.avatar{width:48px;height:48px;border-radius:50%;border:3px solid var(--red);object-fit:cover;flex:none}
+.brand{font-family:var(--font-d);font-size:1.25rem;font-weight:600}
+.brand small{display:block;font-family:var(--font-b);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:#D9CFD2;font-weight:700}
+.xp{margin-left:auto;text-align:right;font-variant-numeric:tabular-nums}
+.xp b{font-family:var(--font-d);font-size:1.3rem;color:var(--gold)}
+.xp span{display:block;font-size:.72rem;color:#D9CFD2;text-transform:uppercase;letter-spacing:.08em}
+.modeBtn{background:var(--red);color:#fff;border:0;border-radius:999px;padding:8px 14px;font-weight:800}
+.modeBtn:focus-visible,button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.levelbar{display:flex;align-items:center;gap:12px;margin:18px 0 8px;flex-wrap:wrap}
+.levelbar h2{font-size:1.6rem}
+.bar{flex:1;min-width:160px;height:14px;background:var(--line);border-radius:999px;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--red-deep),var(--red));border-radius:999px;transition:width .5s}
+.lvl{font-weight:800;color:var(--muted);font-size:.9rem;font-variant-numeric:tabular-nums}
+.map{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:14px}
+@media(min-width:640px){.map{grid-template-columns:repeat(3,1fr)}}
+.mission{background:var(--card);border-radius:22px;padding:18px;box-shadow:var(--shadow);border:2px solid transparent;text-align:left;color:var(--ink);display:flex;flex-direction:column;gap:8px;position:relative;transition:transform .15s}
+.mission:hover{transform:translateY(-3px)}
+.mission.done{border-color:var(--green)}
+.mapGroup{grid-column:1/-1;font-size:1rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:8px;border-bottom:2px solid var(--line);padding-bottom:4px}
+.mission .num{position:absolute;top:-10px;left:14px;background:var(--black);color:#fff;font-family:var(--font-d);font-size:.8rem;padding:2px 10px;border-radius:999px}
+.mission .ico{font-size:2.2rem;line-height:1}
+.mission h3{font-size:1.1rem}
+.mission p{margin:0;font-size:.85rem;color:var(--muted)}
+.pill{align-self:flex-start;font-size:.72rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:var(--red-soft);color:var(--red)}
+.mission.done .pill{background:#E4F3EA;color:var(--green)}
+.mission .stars{color:var(--gold);letter-spacing:2px}
+.badges{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+.badge{display:flex;align-items:center;gap:8px;background:var(--card);border:2px solid var(--line);border-radius:14px;padding:8px 12px;font-weight:800;font-size:.85rem}
+.badge.earned{border-color:var(--gold);background:linear-gradient(180deg,var(--card),var(--red-soft));animation:pop .5s}
+.badge:not(.earned){filter:grayscale(1);opacity:.55}
+.badge .b{font-size:1.4rem}
+@keyframes pop{0%{transform:scale(.6)}70%{transform:scale(1.1)}100%{transform:scale(1)}}
+section{margin-top:28px}
+section h2{font-size:1.35rem;margin-bottom:6px}
+.sub{color:var(--muted);margin:0 0 10px;font-size:.9rem}
+.panel{background:var(--card);border-radius:22px;padding:22px;box-shadow:var(--shadow);margin-top:16px}
+.back{background:none;border:0;color:var(--red);font-weight:800;padding:0;margin-bottom:8px}
+/* explainer */
+.lab{background:var(--bg);border:2px solid var(--line);border-radius:18px;padding:14px;margin-top:12px}
+.lab h4{font-size:1rem;margin-bottom:8px;color:var(--red)}
+.lab svg,.lab canvas{width:100%;max-width:100%;height:auto;display:block;border-radius:12px}
+.ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
+.ctl label{font-weight:800;font-size:.85rem;display:flex;align-items:center;gap:6px}
+.ctl input[type=range]{accent-color:var(--red);width:150px;max-width:100%}
+.sbtn{background:var(--black);color:#fff;border:0;border-radius:999px;padding:8px 14px;font-weight:800;font-size:.9rem}
+.sbtn.alt{background:var(--red)}
+.sbtn.on{outline:3px solid var(--gold)}
+.readout{font-family:var(--font-d);font-size:1.05rem;margin-top:8px;min-height:1.5em;color:var(--ink)}
+.readout b{color:var(--red)}
+/* lesson cards */
+.lesson{margin-top:14px}
+.lcard{background:var(--red-soft);border-radius:18px;padding:16px 18px;min-height:110px;animation:slide .35s}
+@keyframes slide{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
+.lcard h4{font-size:1.15rem;margin-bottom:6px}
+.lcard p{margin:0;font-size:1.02rem;max-width:62ch}
+.dots{display:flex;gap:6px;margin:10px 0}
+.dots i{width:10px;height:10px;border-radius:50%;background:var(--line)}
+.dots i.on{background:var(--red)}.dots i.seen{background:var(--red-deep);opacity:.5}
+.steps{display:grid;gap:10px;margin:14px 0}
+.step{display:flex;gap:12px;background:var(--red-soft);border-radius:14px;padding:12px 14px}
+.step b{font-family:var(--font-d);color:var(--red);flex:none;font-size:1.2rem}
+.q{margin-top:18px;padding-top:16px;border-top:2px dashed var(--line)}
+.q h3{font-size:1.1rem;margin-bottom:10px}
+.opts{display:grid;gap:8px}
+.opt{text-align:left;background:var(--bg);border:2px solid var(--line);border-radius:14px;padding:12px 14px;color:var(--ink);font-weight:700}
+.opt:hover{border-color:var(--red)}
+.opt.right{border-color:var(--green);background:#E4F3EA;color:#14532d;animation:pop .4s}
+.opt.wrong{border-color:var(--red);background:var(--red-soft);animation:shake .4s}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.fb{margin-top:8px;font-weight:800;min-height:1.4em}
+.fb.ok{color:var(--green)}.fb.no{color:var(--red)}
+.why{margin-top:6px;font-size:.95rem;background:var(--bg);border-left:4px solid var(--gold);padding:8px 12px;border-radius:8px}
+.dnd{display:grid;gap:12px;margin-top:10px}
+.pool{display:flex;flex-wrap:wrap;gap:8px;min-height:44px;padding:8px;border:2px dashed var(--line);border-radius:14px}
+.chip{background:var(--black);color:#fff;border-radius:999px;padding:6px 12px;font-weight:800;cursor:grab;border:0;user-select:none}
+.chip.sel{outline:3px solid var(--gold)}
+.bins{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px}
+.bin{min-height:90px;border:2px solid var(--line);border-radius:14px;padding:8px;display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.bin.over{border-color:var(--red);background:var(--red-soft)}
+.bin.ok{border-color:var(--green)}.bin.bad{border-color:var(--red)}
+.bin h4{margin:0;font-family:var(--font-d);font-size:.95rem;width:100%;text-align:center}
+.btn{background:var(--red);color:#fff;border:0;border-radius:999px;padding:12px 22px;font-weight:800;font-size:1rem;box-shadow:0 4px 0 var(--red-deep)}
+.btn:active{transform:translateY(2px);box-shadow:0 2px 0 var(--red-deep)}
+.btn.ghost{background:transparent;color:var(--red);border:2px solid var(--red);box-shadow:none}
+.btn:disabled{opacity:.4;cursor:default}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;align-items:center}
+.score{font-family:var(--font-d);font-size:1.3rem}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(120%);background:var(--black);color:#fff;padding:14px 20px;border-radius:16px;font-weight:800;box-shadow:var(--shadow);transition:transform .35s;z-index:9;text-align:center;max-width:90vw}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast b{color:var(--gold)}
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:8}
+.confetti i{position:absolute;top:-10px;width:10px;height:14px;border-radius:2px;animation:fall 1.8s linear forwards}
+@keyframes fall{to{transform:translateY(105vh) rotate(720deg);opacity:.6}}
+/* robot grid */
+.grid{display:grid;grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(5,1fr);gap:4px;max-width:320px;aspect-ratio:1;position:relative}
+.cell{background:var(--card);border-radius:8px;border:1px solid var(--line)}
+.cell.goal{background:var(--gold)}.cell.wall{background:var(--black)}
+.bot{position:absolute;width:20%;height:20%;display:flex;align-items:center;justify-content:center;font-size:1.8rem;transition:left .35s,top .35s}
+.prog{display:flex;flex-wrap:wrap;gap:6px;min-height:36px;margin-top:8px}
+.cmd{background:var(--red);color:#fff;border-radius:8px;padding:4px 10px;font-weight:800;font-size:.9rem}
+.cmd.loop{background:var(--gold);color:var(--black)}
+/* parent */
+.kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media(min-width:640px){.kpis{grid-template-columns:repeat(4,1fr)}}
+.kpi{background:var(--card);border-radius:16px;padding:14px;box-shadow:var(--shadow)}
+.kpi b{display:block;font-family:var(--font-d);font-size:1.8rem;color:var(--red);font-variant-numeric:tabular-nums}
+.kpi span{font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:800}
+table{width:100%;border-collapse:collapse;font-size:.92rem}
+th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line)}
+th{font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+td.n{font-variant-numeric:tabular-nums}
+.tag{font-size:.72rem;font-weight:800;padding:2px 8px;border-radius:999px;background:var(--line)}
+.tag.done{background:#E4F3EA;color:var(--green)}.tag.prog{background:#FFF3D6;color:#8A5A00}.tag.need{background:var(--red-soft);color:var(--red)}
+.tblwrap{overflow-x:auto}
+form.add{display:grid;gap:10px;margin-top:8px}
+form.add label{display:grid;gap:4px;font-weight:800;font-size:.85rem}
+form.add input,form.add select{font:inherit;padding:10px;border:2px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:480px){.two{grid-template-columns:1fr}}
+.note{font-size:.85rem;color:var(--muted)}
+.syncDot{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--line);vertical-align:middle}.syncDot.ok{background:var(--green)}.syncDot.err{background:var(--red)}.syncDot.busy{background:var(--gold)}
+.hint{background:var(--red-soft);color:var(--red-deep);border-radius:12px;padding:10px 12px;font-size:.9rem;font-weight:700}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="top"><div class="wrap">
+  <img class="avatar" id="avatar" alt="Nawaf" src="">
+  <div class="brand"><small>STEM Portal</small>Nawaf's Missions</div>
+  <div class="xp"><b id="xpTotal">0</b><span>XP</span></div>
+  <button class="modeBtn" id="modeBtn">Parent view</button>
+</div></div>
+
+<div class="wrap" id="student">
+  <div class="levelbar"><h2 id="greet">Ready for a mission, Nawaf?</h2><div class="bar"><i id="lvlFill" style="width:0%"></i></div><span class="lvl" id="lvlText">Level 1</span></div>
+  <div id="mapView">
+    <section><h2>Mission Map</h2><p class="sub">Each mission: play with the lab, learn the idea, then take the quiz to earn XP and stars.</p><div class="map" id="map"></div></section>
+    <section><h2>Badges</h2><p class="sub">Collect them all.</p><div class="badges" id="badges"></div></section>
+  </div>
+  <div id="modView" hidden><div class="panel"><button class="back" id="backBtn">← Back to map</button><div id="modBody"></div></div></div>
+</div>
+
+<div class="wrap" id="parent" hidden>
+  <section><h2>Progress summary</h2><p class="sub">Dr. Almajed · Parent dashboard. <span class="syncDot off" id="syncDot"></span> <span id="syncStat">Cloud sync is off</span> <button class="sbtn" id="refreshBtn" style="padding:4px 10px;font-size:.8rem">Refresh</button></p><div class="kpis" id="kpis"></div></section>
+  <section><h2>Modules</h2><div class="panel tblwrap" id="ptable"></div></section>
+  <section><h2>Recent activity</h2><p class="sub">Every lesson, quiz answer and completed mission, newest first.</p><div class="panel tblwrap" id="plog"></div></section>
+  <section><h2>Cloud sync (Google Drive)</h2><p class="sub">Paste the web-app URL and key from your Apps Script deployment. Progress then saves to a Google Sheet in your Drive and loads on every device.</p>
+    <div class="panel"><form class="add" id="syncForm"><label>Web app URL <input id="syncUrl" placeholder="https://script.google.com/macros/s/…/exec"></label><label>Key <input id="syncKey" placeholder="the SECRET you set in Code.gs"></label><div class="row" style="margin-top:4px"><button class="btn" type="submit">Save & connect</button><span class="note">Leave the URL empty to turn sync off.</span></div></form></div></section>
+  <section><h2>Add a custom quiz question</h2><p class="sub">Appears in the mission you choose on Nawaf's next attempt.</p>
+    <div class="panel"><form class="add" id="addQ">
+      <label>Mission <select id="qMod"></select></label>
+      <label>Question <input id="qText" required placeholder="What force pulls objects toward Earth?"></label>
+      <div class="two"><label>Correct answer <input id="qA" required placeholder="Gravity"></label><label>Wrong answer 1 <input id="qB" required placeholder="Magnetism"></label><label>Wrong answer 2 <input id="qC" required placeholder="Friction"></label><label>Explanation shown after answering <input id="qE" placeholder="Gravity pulls everything toward Earth's centre."></label></div>
+      <div class="row" style="margin-top:4px"><button class="btn" type="submit">Add question</button><button class="btn ghost" type="button" id="resetBtn">Reset all progress</button><span class="note" id="addMsg"></span></div>
+    </form></div></section>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="confetti" id="confetti"></div>
+
+<script>
+const AVATAR="data:image/jpeg;base64,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";
+document.getElementById('avatar').src=AVATAR;
+
+/* ---------- explainer labs ---------- */
+const LABS={
+forces(el){
+  el.innerHTML=`<h4>Lab: push the ball</h4>
+  <svg viewBox="0 0 400 150" id="fsvg"><rect x="0" y="120" width="400" height="30" id="floor" fill="#BFE3F5"/><line x1="0" y1="120" x2="400" y2="120" stroke="#141215" stroke-width="2"/>
+  <text id="floorLbl" x="8" y="140" font-size="12" font-family="Nunito" font-weight="800" fill="#141215">ICE (low friction)</text>
+  <circle id="ball" cx="40" cy="104" r="16" fill="#C8102E"/><circle id="ballDot" cx="40" cy="96" r="4" fill="#fff"/>
+  <text id="apple" x="300" y="30" font-size="26">🍎</text><line x1="290" y1="8" x2="330" y2="8" stroke="#141215" stroke-width="3"/></svg>
+  <div class="ctl"><button class="sbtn alt" id="pushS">Push gently</button><button class="sbtn alt" id="pushH">Push hard</button><button class="sbtn" id="ice">Ice</button><button class="sbtn" id="carpet">Carpet</button><button class="sbtn" id="drop">Drop the apple</button></div>
+  <div class="readout" id="fRead">A ball at rest stays at rest until a <b>force</b> pushes it.</div>`;
+  const ball=el.querySelector('#ball'),dot=el.querySelector('#ballDot'),read=el.querySelector('#fRead'),apple=el.querySelector('#apple');
+  let x=40,v=0,fr=0.02,ang=0,raf; const surf=(f,name,col,btn)=>{fr=f;el.querySelector('#floor').setAttribute('fill',col);el.querySelector('#floorLbl').textContent=name;el.querySelectorAll('#ice,#carpet').forEach(b=>b.classList.remove('on'));btn.classList.add('on');read.innerHTML=`Surface: <b>${name}</b>. More friction stops the ball sooner.`};
+  el.querySelector('#ice').onclick=e=>surf(0.02,'ICE (low friction)','#BFE3F5',e.target); el.querySelector('#carpet').onclick=e=>surf(0.12,'CARPET (high friction)','#D4A937',e.target); el.querySelector('#ice').classList.add('on');
+  function tick(){v=Math.max(0,v-fr);x+=v;ang+=v*4;if(x>384){x=384;v=0}ball.setAttribute('cx',x);dot.setAttribute('cx',x+8*Math.cos(ang/20));dot.setAttribute('cy',104+8*Math.sin(ang/20));if(v>0)raf=requestAnimationFrame(tick);else read.innerHTML=x>=384?'It hit the wall. A wall is a force that stops motion.':`Stopped by <b>friction</b> after ${Math.round(x-40)} cm.`}
+  const push=p=>{if(x>300)x=40;v=p;read.innerHTML=`You gave a <b>push</b> of ${p}. Watch friction slow it down.`;cancelAnimationFrame(raf);tick()};
+  el.querySelector('#pushS').onclick=()=>push(3);el.querySelector('#pushH').onclick=()=>push(7);
+  el.querySelector('#drop').onclick=()=>{let y=30,vy=0,t;const f=()=>{vy+=0.5;y+=vy;if(y>118){y=118;vy=-vy*0.3;if(Math.abs(vy)<1){apple.setAttribute('y',y);read.innerHTML='<b>Gravity</b> pulled the apple down, faster and faster, until the ground stopped it.';return}}apple.setAttribute('y',y);t=requestAnimationFrame(f)};apple.setAttribute('y',30);read.innerHTML='Gravity is pulling…';f()};
+},
+matter(el){
+  el.innerHTML=`<h4>Lab: heat it up</h4><canvas id="mc" width="400" height="180"></canvas>
+  <div class="ctl"><label>❄️ <input type="range" id="heat" min="0" max="100" value="10"> 🔥</label></div><div class="readout" id="mRead"></div>`;
+  const c=el.querySelector('#mc'),ctx=c.getContext('2d'),sl=el.querySelector('#heat'),read=el.querySelector('#mRead');
+  const N=36,P=[];for(let i=0;i<N;i++)P.push({hx:80+(i%6)*30,hy:50+Math.floor(i/6)*22,x:0,y:0,vx:0,vy:0});P.forEach(p=>{p.x=p.hx;p.y=p.hy});
+  let raf;function step(){const h=+sl.value;const state=h<34?'solid':h<67?'liquid':'gas';const dark=matchMedia('(prefers-color-scheme:dark)').matches&&document.documentElement.dataset.theme!=='light'||document.documentElement.dataset.theme==='dark';
+    ctx.fillStyle=dark?'#2A2226':'#FBE7EA';ctx.fillRect(0,0,400,180);ctx.strokeStyle=dark?'#B4A6AA':'#141215';ctx.lineWidth=3;ctx.strokeRect(50,20,300,150);
+    P.forEach(p=>{if(state==='solid'){p.x+=(p.hx-p.x)*0.2+(Math.random()-.5)*h*0.08;p.y+=(p.hy-p.y)*0.2+(Math.random()-.5)*h*0.08}
+      else if(state==='liquid'){p.vx+=(Math.random()-.5)*0.6;p.vy+=0.25;p.x+=p.vx;p.y+=p.vy;if(p.y>160){p.y=160;p.vy*=-0.3}if(p.x<60){p.x=60;p.vx*=-1}if(p.x>340){p.x=340;p.vx*=-1}P.forEach(q=>{if(q!==p){const dx=p.x-q.x,dy=p.y-q.y,d=Math.hypot(dx,dy);if(d<18&&d>0){p.x+=dx/d*0.8;p.y+=dy/d*0.8}}});p.vx*=0.9;p.vy*=0.9}
+      else{const s=1+(h-67)/10;p.vx+=(Math.random()-.5)*s;p.vy+=(Math.random()-.5)*s;p.x+=p.vx;p.y+=p.vy;if(p.x<60||p.x>340)p.vx*=-1;if(p.y<30||p.y>160)p.vy*=-1;p.x=Math.min(340,Math.max(60,p.x));p.y=Math.min(160,Math.max(30,p.y));p.vx*=0.98;p.vy*=0.98}
+      ctx.beginPath();ctx.arc(p.x,p.y,8,0,7);ctx.fillStyle=state==='gas'?'#D4A937':'#C8102E';ctx.fill()});
+    read.innerHTML={solid:'<b>SOLID</b> · Particles hold hands in a tight pattern and only wiggle. It keeps its shape, like ice.',liquid:'<b>LIQUID</b> · Particles slide past each other and sink to the bottom. It flows and takes the shape of the box.',gas:'<b>GAS</b> · Particles fly free and fill the whole box. Like steam or the air in a balloon.'}[state];
+    raf=requestAnimationFrame(step)}
+  step(); el._stop=()=>cancelAnimationFrame(raf);
+},
+machines(el){
+  el.innerHTML=`<h4>Lab: lift the rock with a lever</h4>
+  <svg viewBox="0 0 400 170"><g id="beam" style="transition:transform .5s;transform-origin:200px 120px"><rect x="20" y="115" width="360" height="10" rx="5" fill="#141215"/><text id="rock" x="40" y="108" font-size="30">🪨</text><text x="46" y="70" font-size="11" font-family="Nunito" font-weight="800" fill="#C8102E" id="rockLbl">10 kg rock</text><text id="hand" x="330" y="108" font-size="30">✋</text></g>
+  <polygon id="ful" points="200,125 185,160 215,160" fill="#C8102E" style="transition:transform .5s"/><text x="120" y="165" font-size="11" font-family="Nunito" font-weight="800" fill="#6E6468">fulcrum ▲ (slide it)</text></svg>
+  <div class="ctl"><label>Move fulcrum <input type="range" id="fx" min="60" max="300" value="200"></label></div><div class="readout" id="lRead"></div>`;
+  const sl=el.querySelector('#fx'),beam=el.querySelector('#beam'),ful=el.querySelector('#ful'),read=el.querySelector('#lRead');
+  const upd=()=>{const f=+sl.value;const left=f-40,right=340-f;const need=Math.round(10*left/right*10)/10;ful.style.transform=`translateX(${f-200}px)`;beam.style.transformOrigin=`${f}px 120px`;const tilt=need>5?-8:need<2?12:4;beam.style.transform=`rotate(${tilt}deg)`;
+    read.innerHTML=need<=2?`Fulcrum close to the rock: you only need to push with <b>${need} kg</b>. Easy lift!`:need<=5?`You need to push with <b>${need} kg</b>. A little easier than lifting 10 kg.`:`Fulcrum far from the rock: you need <b>${need} kg</b>. That is harder than just lifting it!`};
+  sl.oninput=upd;upd();
+},
+earth(el){
+  const T=[20,23,27,33,39,43,44,44,40,35,27,22],M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  el.innerHTML=`<h4>Lab: a year of Riyadh weather</h4>
+  <svg viewBox="0 0 400 170"><rect id="sky" x="0" y="0" width="400" height="140" fill="#BFE3F5" style="transition:fill .5s"/><circle id="sun" cx="200" cy="90" r="22" fill="#D4A937" style="transition:cy .5s;cy:90px"/>
+  <path d="M0 140 L0 110 L30 110 L30 90 L60 90 L60 120 L90 120 L90 70 L110 70 L110 60 L120 60 L120 130 L160 130 L160 100 L200 100 L200 30 L215 30 L215 22 L225 22 L225 100 L260 100 L260 120 L300 120 L300 95 L330 95 L330 115 L370 115 L370 100 L400 100 L400 140 Z" fill="#141215"/>
+  <rect x="0" y="140" width="400" height="30" fill="#D4A937"/>
+  <rect x="350" y="20" width="14" height="110" rx="7" fill="#fff" stroke="#141215" stroke-width="2"/><rect id="merc" x="353" y="120" width="8" height="8" rx="4" fill="#C8102E" style="transition:y .5s,height .5s;y:120px;height:8px"/>
+  <text id="tLbl" x="345" y="15" font-size="13" font-family="Fredoka" font-weight="700" text-anchor="end" fill="#141215">20°C</text><text id="mLbl" x="10" y="20" font-size="16" font-family="Fredoka" font-weight="700" fill="#141215">January</text></svg>
+  <div class="ctl"><label>Month <input type="range" id="mo" min="0" max="11" value="0"></label></div><div class="readout" id="eRead"></div>`;
+  const sl=el.querySelector('#mo');const upd=()=>{const i=+sl.value,t=T[i],h=(t-15)/32;const mc=el.querySelector('#merc');mc.style.y=(124-h*100)+'px';mc.style.height=(4+h*100)+'px';el.querySelector('#tLbl').textContent=t+'°C';el.querySelector('#mLbl').textContent=['January','February','March','April','May','June','July','August','September','October','November','December'][i];el.querySelector('#sun').style.cy=(95-h*60)+'px';el.querySelector('#sky').style.fill=(t>38?'#F6C9A0':t>28?'#DDEBF3':'#BFE3F5');
+    el.querySelector('#eRead').innerHTML=`${M[i]}: a typical afternoon is <b>${t}°C</b>. ${t>40?'Very hot. Sun high in the sky, stay in the shade.':t>30?'Warm and dry.':'Cool, and nights can be cold. This is when Riyadh gets its little rain.'} That pattern, year after year, is Riyadh\'s <b>climate</b>.`};sl.oninput=upd;upd();
+},
+ecosystems(el){
+  const nodes=[['🌿','Desert plant','Makes its own food from sunlight.'],['🐜','Ant','Eats plant seeds. Food for lizards.'],['🦎','Lizard','Eats ants. Hides under rocks by day.'],['🦅','Falcon','Eats lizards. Top of this food chain.']];
+  el.innerHTML=`<h4>Lab: the desert food chain</h4><svg viewBox="0 0 400 130" id="fc">${nodes.map((n,i)=>`<g class="fn" data-i="${i}" style="cursor:pointer"><circle cx="${55+i*96}" cy="60" r="34" fill="#FBE7EA" stroke="#C8102E" stroke-width="3" id="c${i}"/><text x="${55+i*96}" y="72" font-size="34" text-anchor="middle">${n[0]}</text><text x="${55+i*96}" y="118" font-size="12" text-anchor="middle" font-family="Nunito" font-weight="800" fill="#6E6468">${n[1]}</text></g>${i<3?`<path d="M${95+i*96} 60 L${111+i*96} 60" stroke="#141215" stroke-width="3" marker-end="url(#ar)"/>`:''}`).join('')}<defs><marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" fill="#141215"/></marker></defs><circle id="pulse" r="7" fill="#D4A937" cx="55" cy="60" opacity="0"/></svg>
+  <div class="ctl"><button class="sbtn alt" id="flow">Play: energy flow</button><button class="sbtn" id="rm">What if the lizards disappear?</button></div><div class="readout" id="ecRead">Tap an animal to learn about it. Arrows show who eats whom.</div>`;
+  const read=el.querySelector('#ecRead'),pulse=el.querySelector('#pulse');
+  el.querySelectorAll('.fn').forEach(g=>g.onclick=()=>{const n=nodes[+g.dataset.i];read.innerHTML=`<b>${n[1]}</b>: ${n[2]}`});
+  el.querySelector('#flow').onclick=()=>{let t=0;pulse.setAttribute('opacity',1);const f=()=>{t+=0.012;pulse.setAttribute('cx',55+t*288);if(t<1)requestAnimationFrame(f);else{pulse.setAttribute('opacity',0);read.innerHTML='Energy starts in the <b>sun</b>, goes into the plant, then passes up the chain with every meal.'}};read.innerHTML='Energy moving up the chain…';f()};
+  let gone=false;el.querySelector('#rm').onclick=()=>{gone=!gone;el.querySelector('#c2').setAttribute('fill',gone?'#ccc':'#FBE7EA');el.querySelector('#c3').setAttribute('opacity',gone?0.35:1);el.querySelector('#c1').setAttribute('r',gone?42:34);read.innerHTML=gone?'No lizards: the <b>falcons</b> lose their food and the <b>ants</b> multiply. Every link matters.':'Lizards are back. The chain is balanced again.'};
+},
+coding(el){
+  el.innerHTML=`<h4>Lab: program the robot to the star</h4><div class="grid" id="g"></div><div class="prog" id="prog"></div>
+  <div class="ctl"><button class="sbtn" data-c="↑">↑</button><button class="sbtn" data-c="↓">↓</button><button class="sbtn" data-c="←">←</button><button class="sbtn" data-c="→">→</button><button class="sbtn" style="background:var(--gold);color:var(--black)" id="loop">Repeat last ×3</button><button class="sbtn alt" id="run">▶ Run</button><button class="sbtn" id="clr">Clear</button></div><div class="readout" id="cRead">Add commands, then press Run. Walls are black. Can you use "Repeat" to write fewer commands?</div>`;
+  const g=el.querySelector('#g'),walls=new Set(['2,1','2,2','2,3']),goal=[4,0];
+  for(let y=0;y<5;y++)for(let x=0;x<5;x++){const c=document.createElement('div');c.className='cell'+(walls.has(x+','+y)?' wall':'')+(x===goal[0]&&y===goal[1]?' goal':'');g.appendChild(c)}
+  const bot=document.createElement('div');bot.className='bot';bot.textContent='🤖';g.appendChild(bot);let pos=[0,4];const place=()=>{bot.style.left=pos[0]*20+'%';bot.style.top=pos[1]*20+'%'};place();
+  let prog=[];const pr=el.querySelector('#prog'),read=el.querySelector('#cRead');const draw=()=>{pr.innerHTML=prog.map(c=>`<span class="cmd ${c.length>1?'loop':''}">${c}</span>`).join('')||'<span class="note">(no commands yet)</span>'};draw();
+  el.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{prog.push(b.dataset.c);draw()});
+  el.querySelector('#loop').onclick=()=>{if(!prog.length)return;const last=prog.pop();prog.push(last.replace(/ ×\d/,'')+' ×3');draw()};
+  el.querySelector('#clr').onclick=()=>{prog=[];pos=[0,4];place();draw();read.textContent='Cleared.'};
+  el.querySelector('#run').onclick=()=>{const seq=[];prog.forEach(c=>{const m=c.match(/(.) ×(\d)/);if(m)for(let i=0;i<+m[2];i++)seq.push(m[1]);else seq.push(c)});pos=[0,4];place();let i=0;read.textContent='Running…';
+    const st=()=>{if(i>=seq.length){read.innerHTML=pos[0]===goal[0]&&pos[1]===goal[1]?'🎉 <b>You reached the star!</b> That is programming: exact steps in the right order.':'The robot stopped here. Check your <b>sequence</b> and fix the bug.';return}
+      const d={'↑':[0,-1],'↓':[0,1],'←':[-1,0],'→':[1,0]}[seq[i]];const n=[pos[0]+d[0],pos[1]+d[1]];if(n[0]<0||n[0]>4||n[1]<0||n[1]>4||walls.has(n.join(','))){read.innerHTML='💥 Bump! The robot hit a wall. That is a <b>bug</b>. Fix it and run again.';bot.style.animation='shake .4s';setTimeout(()=>bot.style.animation='',400);return}pos=n;place();i++;setTimeout(st,400)};st()};
+},
+lifecycles(el){
+  const A={butterfly:[['🥚','Egg','A tiny egg on a leaf. Inside, a caterpillar is forming.'],['🐛','Larva (caterpillar)','It eats leaves all day and grows fast, shedding its skin several times.'],['🟤','Pupa (chrysalis)','It hangs still inside a hard case. Inside, its body completely rebuilds.'],['🦋','Adult butterfly','It flies, drinks nectar, and lays new eggs. The cycle starts again.']],
+    frog:[['🥚','Eggs (frogspawn)','Hundreds of jelly eggs floating in a pond.'],['🐟','Tadpole','It breathes with gills and swims with a tail, like a fish.'],['🐸','Froglet','Back legs grow, then front legs. The tail shrinks and lungs grow.'],['🐸','Adult frog','It lives on land and in water, and returns to the pond to lay eggs.']],
+    plant:[['🌰','Seed','A seed waits in the soil until it has water and warmth.'],['🌱','Sprout','The root grows down for water. The shoot grows up toward light.'],['🌿','Young plant','Leaves open and make food from sunlight.'],['🌻','Flowering plant','Flowers make new seeds. The seeds fall, and the cycle starts again.']]};
+  el.innerHTML=`<h4>Lab: the life cycle wheel</h4><svg viewBox="0 0 400 190"><circle cx="200" cy="95" r="62" fill="none" stroke="#C8102E" stroke-width="3" stroke-dasharray="6 6"/><g id="stg"></g><text id="stgLbl" x="200" y="101" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="14" fill="#C8102E">Tap Next stage</text></svg>
+  <div class="ctl"><button class="sbtn on" data-a="butterfly">Butterfly</button><button class="sbtn" data-a="frog">Frog</button><button class="sbtn" data-a="plant">Sunflower</button><button class="sbtn alt" id="nx">Next stage →</button></div><div class="readout" id="lcRead"></div>`;
+  let a='butterfly',i=-1;const g=el.querySelector('#stg'),read=el.querySelector('#lcRead');
+  const draw=()=>{const st=A[a];g.innerHTML=st.map((s,k)=>{const ang=-Math.PI/2+k*Math.PI/2,x=200+Math.cos(ang)*110,y=95+Math.sin(ang)*72;const on=k===i;return `<g style="transition:transform .4s;transform-origin:${x}px ${y}px;transform:scale(${on?1.5:1})"><circle cx="${x}" cy="${y}" r="26" fill="${on?'#C8102E':'#FBE7EA'}" stroke="#C8102E" stroke-width="2"/><text x="${x}" y="${y+9}" font-size="26" text-anchor="middle">${s[0]}</text></g>`}).join('')+`<path d="M262 95 A62 62 0 0 1 200 157" fill="none" stroke="#141215" stroke-width="3" marker-end="url(#lca)"/><defs><marker id="lca" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" fill="#141215"/></marker></defs>`;
+    el.querySelector('#stgLbl').textContent=i<0?'Tap Next stage':'Stage '+(i+1)+' of 4';read.innerHTML=i<0?`Tap <b>Next stage</b> to follow a ${a==='plant'?'sunflower':a}'s life around the wheel.`:`<b>${st[i][1]}</b>: ${st[i][2]}`+(i===3?' Birth, growth, reproduction, death: every living thing has a cycle.':'')};
+  el.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{a=b.dataset.a;i=-1;el.querySelectorAll('[data-a]').forEach(x=>x.classList.remove('on'));b.classList.add('on');draw()});
+  el.querySelector('#nx').onclick=()=>{i=(i+1)%4;draw()};draw();
+},
+traits(el){
+  el.innerHTML=`<h4>Lab: grow a flower from two parents</h4><svg viewBox="0 0 400 190"><text x="60" y="60" font-size="40" text-anchor="middle" id="p1">🌺</text><text x="60" y="80" font-size="11" text-anchor="middle" font-family="Nunito" font-weight="800" fill="#6E6468">Parent 1</text><text x="140" y="60" font-size="40" text-anchor="middle" id="p2">🌺</text><text x="140" y="80" font-size="11" text-anchor="middle" font-family="Nunito" font-weight="800" fill="#6E6468">Parent 2</text><text x="100" y="60" font-size="22" text-anchor="middle">+</text>
+  <rect x="230" y="150" width="140" height="30" fill="#8B5A2B" rx="6"/><line id="stem" x1="300" y1="150" x2="300" y2="150" stroke="#2E8B57" stroke-width="6" style="transition:y2 .6s"/><text id="kid" x="300" y="160" font-size="34" text-anchor="middle" style="transition:y .6s">🌺</text><text id="sun" x="360" y="40" font-size="30">☀️</text><text x="300" y="30" font-size="11" text-anchor="middle" font-family="Nunito" font-weight="800" fill="#6E6468">Offspring</text></svg>
+  <div class="ctl"><button class="sbtn on" data-c="🌺">Red parents</button><button class="sbtn" data-c="🌼">Yellow parents</button><label>Sunlight <input type="range" id="sunl" min="0" max="100" value="50"></label><label>Water <input type="range" id="wat" min="0" max="100" value="50"></label></div><div class="readout" id="trRead"></div>`;
+  let col='🌺';const upd=()=>{const s=+el.querySelector('#sunl').value,w=+el.querySelector('#wat').value;const h=20+Math.min(s,w)*0.9;el.querySelector('#stem').setAttribute('y2',150-h);el.querySelector('#kid').setAttribute('y',150-h+10);el.querySelector('#kid').textContent=col;el.querySelector('#p1').textContent=col;el.querySelector('#p2').textContent=col;el.querySelector('#sun').style.opacity=0.3+s/140;
+    el.querySelector('#trRead').innerHTML=`Flower colour is <b>inherited</b> from the parents: it stays ${col==='🌺'?'red':'yellow'} no matter what. Height comes from the <b>environment</b>: ${h<40?'little sun or water, so it stays small.':h<80?'medium sun and water, medium height.':'plenty of sun and water, so it grows tall.'} Same seeds, different gardens, different plants.`};
+  el.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{col=b.dataset.c;el.querySelectorAll('[data-c]').forEach(x=>x.classList.remove('on'));b.classList.add('on');upd()});el.querySelector('#sunl').oninput=upd;el.querySelector('#wat').oninput=upd;upd();
+},
+fossils(el){
+  const L=[['#D4A937','Today: desert sand','🐪','Camel bones and date seeds. The land is dry.',0],['#C9A27E','1,000s of years ago: river mud','🐊','Crocodile teeth. Rivers once flowed here.',1],['#A0866A','Millions of years ago: sea floor','🐚','Sea shells and fish. This was the bottom of a warm sea!',2],['#6E5A48','Even older: ancient sea','🦐','Tiny sea creatures pressed into rock.',3]];
+  el.innerHTML=`<h4>Lab: dig through the rock layers</h4><svg viewBox="0 0 400 180">${L.map((l,i)=>`<rect x="20" y="${20+i*40}" width="360" height="40" fill="${l[0]}"/><text x="30" y="${45+i*40}" font-size="12" font-family="Nunito" font-weight="800" fill="#141215">${l[1]}</text><text id="fs${i}" x="340" y="${50+i*40}" font-size="26" text-anchor="middle" opacity="0" style="transition:opacity .5s">${l[2]}</text>`).join('')}<rect id="dirt" x="20" y="20" width="360" height="160" fill="#141215" opacity="0.72" style="transition:y .5s,height .5s"/><text id="shovel" x="200" y="15" font-size="18" text-anchor="middle">⛏️</text></svg>
+  <div class="ctl"><label>Dig deeper <input type="range" id="dig" min="0" max="4" value="0"></label></div><div class="readout" id="foRead">Slide to dig. Deeper layers were laid down first, so they are older.</div>`;
+  el.querySelector('#dig').oninput=e=>{const d=+e.target.value;const dirt=el.querySelector('#dirt');dirt.style.y=(20+d*40)+'px';dirt.style.height=Math.max(0,160-d*40)+'px';L.forEach((l,i)=>el.querySelector('#fs'+i).setAttribute('opacity',i<d?1:0));
+    el.querySelector('#foRead').innerHTML=d===0?'Slide to dig. Deeper layers were laid down first, so they are older.':`<b>Layer ${d}</b>: ${L[d-1][3]}`+(d===4?' Fossils tell us Riyadh\'s environment has changed many times.':'')};
+  el.querySelector('#dirt').style.y='20px';el.querySelector('#dirt').style.height='160px';
+},
+groups(el){
+  el.innerHTML=`<h4>Lab: meerkat lookouts</h4><canvas id="gc" width="400" height="170"></canvas>
+  <div class="ctl"><button class="sbtn on" data-n="1">One meerkat</button><button class="sbtn" data-n="6">Group of 6</button><button class="sbtn alt" id="hawk">Send the hawk</button></div><div class="readout" id="grRead">Meerkats live in groups. One always stands guard. Try both, then send the hawk.</div>`;
+  const c=el.querySelector('#gc'),ctx=c.getContext('2d'),read=el.querySelector('#grRead');let n=1,hx=-40,run=false,hidden=false,raf;
+  const draw=()=>{ctx.fillStyle='#F3E1B5';ctx.fillRect(0,0,400,170);ctx.font='28px serif';for(let i=0;i<n;i++){const x=120+(i%3)*60,y=(i<3?110:150);ctx.fillText(hidden?'🕳️':(i===0&&n>1?'🧍':'🐿️'),x,y)}if(n>1&&!hidden){ctx.font='11px Nunito';ctx.fillStyle='#8E0B22';ctx.fillText('lookout',112,72)}ctx.font='30px serif';if(run)ctx.fillText('🦅',hx,45)};
+  const reset=()=>{cancelAnimationFrame(raf);run=false;hidden=false;hx=-40;draw()};
+  el.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{n=+b.dataset.n;el.querySelectorAll('[data-n]').forEach(x=>x.classList.remove('on'));b.classList.add('on');reset();read.innerHTML=n===1?'One meerkat must dig for food AND watch the sky at the same time.':'Six meerkats: five dig for food while one lookout watches the sky.'});
+  el.querySelector('#hawk').onclick=()=>{reset();run=true;const spot=n>1?60:230;const f=()=>{hx+=3;if(hx>spot&&!hidden){hidden=true;read.innerHTML=n>1?'The <b>lookout</b> saw the hawk far away and barked. Everyone hid in time. Safe!':'Alone, it was busy digging and saw the hawk late… it only just escaped.'}draw();if(hx<420)raf=requestAnimationFrame(f);else{run=false;draw();if(n>1)read.innerHTML+=' Living in a group helps animals stay safe, find food and raise their young.'}};f()};
+  draw();el._stop=()=>cancelAnimationFrame(raf);
+},
+multiply(el){
+  el.innerHTML=`<h4>Lab: build an array</h4><svg viewBox="0 0 400 170" id="arr"></svg>
+  <div class="ctl"><label>Rows <input type="range" id="rw" min="1" max="6" value="3"></label><label>In each row <input type="range" id="cl" min="1" max="10" value="4"></label><button class="sbtn alt" id="skip">Count by rows</button></div><div class="readout" id="muRead"></div>`;
+  const svg=el.querySelector('#arr'),read=el.querySelector('#muRead');let r=3,c=4,t;
+  const draw=(hl=-1)=>{svg.innerHTML='';for(let i=0;i<r;i++)for(let j=0;j<c;j++)svg.innerHTML+=`<circle cx="${30+j*36}" cy="${25+i*26}" r="10" fill="${i<=hl?'#C8102E':'#FBE7EA'}" stroke="#C8102E" stroke-width="2"/>`;for(let i=0;i<r;i++)if(i<=hl)svg.innerHTML+=`<text x="${30+c*36}" y="${30+i*26}" font-family="Fredoka" font-weight="700" font-size="14" fill="#141215">${(i+1)*c}</text>`;
+    if(hl<0)read.innerHTML=`<b>${r} rows × ${c}</b> in each row = <b>${r*c}</b>. Turn it around: ${r*c} ÷ ${c} = ${r}, and ${r*c} ÷ ${r} = ${c}. Multiplication and division are the same picture read two ways.`};
+  const upd=()=>{clearTimeout(t);r=+el.querySelector('#rw').value;c=+el.querySelector('#cl').value;draw()};el.querySelector('#rw').oninput=upd;el.querySelector('#cl').oninput=upd;
+  el.querySelector('#skip').onclick=()=>{clearTimeout(t);let i=0;const st=()=>{draw(i);read.innerHTML=`Row ${i+1}: count by ${c}s… <b>${(i+1)*c}</b>`;i++;if(i<r)t=setTimeout(st,650);else t=setTimeout(()=>{read.innerHTML+=`. So ${r} × ${c} = <b>${r*c}</b>.`},650)};st()};upd();
+},
+fractions(el){
+  el.innerHTML=`<h4>Lab: share the chocolate bar</h4><svg viewBox="0 0 400 150" id="fr"></svg>
+  <div class="ctl"><label>Cut into <input type="range" id="parts" min="2" max="8" value="4"> pieces</label><span class="note">Tap pieces to eat them.</span></div><div class="readout" id="frRead"></div>`;
+  const svg=el.querySelector('#fr'),read=el.querySelector('#frRead');let n=4,eaten=new Set();
+  const draw=()=>{const w=360/n;svg.innerHTML=Array.from({length:n},(_,i)=>`<rect data-i="${i}" x="${20+i*w}" y="15" width="${w-3}" height="60" rx="6" fill="${eaten.has(i)?'#FBE7EA':'#8B5A2B'}" stroke="#141215" stroke-width="2" style="cursor:pointer"/>`).join('')+`<line x1="20" y1="120" x2="380" y2="120" stroke="#141215" stroke-width="3"/>`+Array.from({length:n+1},(_,i)=>`<line x1="${20+i*360/n}" y1="112" x2="${20+i*360/n}" y2="128" stroke="#141215" stroke-width="2"/><text x="${20+i*360/n}" y="145" font-size="11" text-anchor="middle" font-family="Nunito" font-weight="800" fill="#6E6468">${i===0?'0':i===n?'1':i+'/'+n}</text>`).join('')+`<circle cx="${20+eaten.size*360/n}" cy="120" r="8" fill="#C8102E" style="transition:cx .4s"/>`;
+    svg.querySelectorAll('rect').forEach(x=>x.onclick=()=>{const i=+x.dataset.i;eaten.has(i)?eaten.delete(i):eaten.add(i);draw()});
+    const e=eaten.size;read.innerHTML=`The bar is cut into <b>${n} equal parts</b>. Each piece is <b>1/${n}</b>. You ate <b>${e}/${n}</b>${e===n?' = 1 whole bar!':e*2===n?' = exactly one half.':e===0?'. The bottom number tells how many equal parts; the top number tells how many you have.':'.'} ${n>=6&&e===1?'Notice: 1/'+n+' is smaller than 1/2. More pieces means smaller pieces.':''}`};
+  el.querySelector('#parts').oninput=e=>{n=+e.target.value;eaten.clear();draw()};draw();
+},
+area(el){
+  el.innerHTML=`<h4>Lab: tile the floor</h4><svg viewBox="0 0 400 190" id="ar"></svg>
+  <div class="ctl"><label>Length <input type="range" id="aw" min="1" max="10" value="5"></label><label>Width <input type="range" id="ah" min="1" max="6" value="3"></label><button class="sbtn alt" id="tile">Lay the tiles</button><button class="sbtn" id="walk">Walk the edge</button></div><div class="readout" id="arRead"></div>`;
+  const svg=el.querySelector('#ar'),read=el.querySelector('#arRead');let w=5,h=3,t;
+  const draw=(k=w*h,edge=0)=>{svg.innerHTML='';const u=28;for(let i=0;i<h;i++)for(let j=0;j<w;j++){const idx=i*w+j;svg.innerHTML+=`<rect x="${40+j*u}" y="${15+i*u}" width="${u}" height="${u}" fill="${idx<k?'#C8102E':'#FBE7EA'}" stroke="#fff" stroke-width="2"/>`}
+    const P=[[40,15],[40+w*u,15],[40+w*u,15+h*u],[40,15+h*u],[40,15]];let d='';let len=0;for(let i=0;i<4;i++){const seg=i%2?h:w;if(edge>=len+seg){d+=`M${P[i][0]} ${P[i][1]} L${P[i+1][0]} ${P[i+1][1]} `}else if(edge>len){const f=(edge-len)/seg;d+=`M${P[i][0]} ${P[i][1]} L${P[i][0]+(P[i+1][0]-P[i][0])*f} ${P[i][1]+(P[i+1][1]-P[i][1])*f} `}len+=seg}
+    svg.innerHTML+=`<path d="${d}" stroke="#D4A937" stroke-width="6" fill="none" stroke-linecap="round"/><text x="${40+w*u/2}" y="${15+h*u+22}" font-size="12" text-anchor="middle" font-family="Nunito" font-weight="800" fill="#6E6468">${w} m</text><text x="${52+w*u}" y="${15+h*u/2+4}" font-size="12" font-family="Nunito" font-weight="800" fill="#6E6468">${h} m</text>`};
+  const upd=()=>{clearTimeout(t);w=+el.querySelector('#aw').value;h=+el.querySelector('#ah').value;draw();read.innerHTML=`A room <b>${w} m long</b> and <b>${h} m wide</b>. Area = ${w} × ${h} = <b>${w*h} square metres</b> (tiles to cover it). Perimeter = ${w}+${h}+${w}+${h} = <b>${2*(w+h)} metres</b> (the walk around the edge).`};
+  el.querySelector('#aw').oninput=upd;el.querySelector('#ah').oninput=upd;
+  el.querySelector('#tile').onclick=()=>{clearTimeout(t);let k=0;const st=()=>{k++;draw(k);read.innerHTML=`Laying tiles… <b>${k}</b>`;if(k<w*h)t=setTimeout(st,120);else read.innerHTML=`<b>${w*h} tiles</b> cover the floor. That is the <b>area</b>: ${w} × ${h} = ${w*h} square metres.`};st()};
+  el.querySelector('#walk').onclick=()=>{clearTimeout(t);let e=0;const st=()=>{e+=0.25;draw(w*h,e);read.innerHTML=`Walking the edge… <b>${Math.floor(e)} m</b>`;if(e<2*(w+h))t=setTimeout(st,60);else read.innerHTML=`You walked <b>${2*(w+h)} metres</b> around the room. That is the <b>perimeter</b>: ${w}+${h}+${w}+${h}.`};st()};upd();
+},
+time(el){
+  el.innerHTML=`<h4>Lab: the clock</h4><svg viewBox="0 0 400 190"><circle cx="110" cy="95" r="85" fill="#fff" stroke="#141215" stroke-width="4"/>${Array.from({length:12},(_,i)=>{const a=(i+1)*Math.PI/6;return `<text x="${110+Math.sin(a)*70}" y="${95-Math.cos(a)*70+6}" font-size="15" text-anchor="middle" font-family="Fredoka" font-weight="700" fill="#141215">${i+1}</text>`}).join('')}${Array.from({length:60},(_,i)=>{const a=i*Math.PI/30;return `<line x1="${110+Math.sin(a)*80}" y1="${95-Math.cos(a)*80}" x2="${110+Math.sin(a)*(i%5?77:73)}" y2="${95-Math.cos(a)*(i%5?77:73)}" stroke="#141215" stroke-width="${i%5?1:2}"/>`}).join('')}
+  <line id="hh" x1="110" y1="95" x2="110" y2="50" stroke="#141215" stroke-width="7" stroke-linecap="round" style="transform-origin:110px 95px;transition:transform .5s"/><line id="mh" x1="110" y1="95" x2="110" y2="30" stroke="#C8102E" stroke-width="4" stroke-linecap="round" style="transform-origin:110px 95px;transition:transform .5s"/><circle cx="110" cy="95" r="5" fill="#141215"/>
+  <rect x="230" y="60" width="150" height="60" rx="10" fill="#141215"/><text id="dig" x="305" y="102" font-size="34" text-anchor="middle" font-family="Fredoka" font-weight="700" fill="#D4A937">3:00</text></svg>
+  <div class="ctl"><label>Hour <input type="range" id="th" min="1" max="12" value="3"></label><label>Minutes <input type="range" id="tm" min="0" max="55" step="5" value="0"></label><button class="sbtn alt" id="plus">+ 45 minutes</button></div><div class="readout" id="tiRead"></div>`;
+  let H=3,M=0;const words=m=>m===0?"o'clock":m===15?'quarter past':m===30?'half past':m===45?'quarter to':m<30?m+' minutes past':(60-m)+' minutes to';
+  const show=()=>{el.querySelector('#hh').style.transform=`rotate(${(H%12)*30+M*0.5}deg)`;el.querySelector('#mh').style.transform=`rotate(${M*6}deg)`;el.querySelector('#dig').textContent=H+':'+String(M).padStart(2,'0');const w=words(M);const hw=M>30?(H%12)+1:H;el.querySelector('#tiRead').innerHTML=`It is <b>${H}:${String(M).padStart(2,'0')}</b>: ${M===0?hw+" o'clock":w+' '+hw}. The short hand shows the hour, the long red hand shows the minutes. Each number on the clock is 5 minutes for the minute hand.`};
+  const upd=()=>{H=+el.querySelector('#th').value;M=+el.querySelector('#tm').value;show()};el.querySelector('#th').oninput=upd;el.querySelector('#tm').oninput=upd;
+  el.querySelector('#plus').onclick=()=>{const s=`${H}:${String(M).padStart(2,'0')}`;M+=45;if(M>=60){M-=60;H=H%12+1}el.querySelector('#th').value=H;el.querySelector('#tm').value=M;show();el.querySelector('#tiRead').innerHTML=`Started at <b>${s}</b>. 45 minutes later it is <b>${H}:${String(M).padStart(2,'0')}</b>. That is elapsed time: how much time has passed.`};show();
+},
+measure(el){
+  const OBJ=[['🍎','apple',150],['📕','book',500],['✏️','pencil',10],['🍉','watermelon',3000],['🪙','coin',5]];
+  el.innerHTML=`<h4>Lab: weigh it, pour it</h4><svg viewBox="0 0 400 190"><g id="scale" style="transform-origin:120px 100px;transition:transform .6s"><line x1="30" y1="100" x2="210" y2="100" stroke="#141215" stroke-width="6"/><rect x="20" y="60" width="60" height="40" fill="none" stroke="#141215" stroke-width="3"/><rect x="160" y="60" width="60" height="40" fill="none" stroke="#141215" stroke-width="3"/><text id="lo" x="50" y="90" font-size="26" text-anchor="middle"></text><text id="ro" x="190" y="92" font-size="12" text-anchor="middle" font-family="Fredoka" font-weight="700" fill="#C8102E"></text></g><polygon points="120,100 105,150 135,150" fill="#C8102E"/><text x="120" y="172" font-size="11" text-anchor="middle" font-family="Nunito" font-weight="800" fill="#6E6468">balance scale (grams)</text>
+  <rect x="290" y="30" width="70" height="130" rx="6" fill="none" stroke="#141215" stroke-width="3"/><rect id="liq" x="293" y="157" width="64" height="0" fill="#BFE3F5" style="transition:all .4s"/>${[250,500,750,1000].map(v=>`<line x1="290" y1="${157-v*0.125}" x2="305" y2="${157-v*0.125}" stroke="#141215" stroke-width="2"/><text x="310" y="${161-v*0.125}" font-size="10" font-family="Nunito" font-weight="800" fill="#141215">${v} mL</text>`).join('')}<text x="325" y="180" font-size="11" text-anchor="middle" font-family="Nunito" font-weight="800" fill="#6E6468">jug (millilitres)</text></svg>
+  <div class="ctl">${OBJ.map((o,i)=>`<button class="sbtn" data-o="${i}">${o[0]}</button>`).join('')}<label>Weights <input type="range" id="wt" min="0" max="3000" step="5" value="0"> g</label><label>Pour <input type="range" id="vol" min="0" max="1000" step="50" value="0"></label></div><div class="readout" id="meRead">Put something on the scale, then add weights until it balances.</div>`;
+  let obj=null;const read=el.querySelector('#meRead');const upd=()=>{const wgt=+el.querySelector('#wt').value,v=+el.querySelector('#vol').value;el.querySelector('#ro').textContent=wgt?wgt+' g':'';const d=obj?obj[2]-wgt:-wgt;el.querySelector('#scale').style.transform=`rotate(${Math.max(-10,Math.min(10,-d/50))}deg)`;el.querySelector('#liq').style.height=v*0.125+'px';el.querySelector('#liq').style.y=(157-v*0.125)+'px';
+    let s=obj?(d===0?`⚖️ Balanced! The ${obj[1]} has a <b>mass of ${obj[2]} g</b>${obj[2]>=1000?' = '+obj[2]/1000+' kg':''}.`:d>0?`The ${obj[1]} side is heavier. Add more weights (${wgt} g so far).`:`Too many weights. Take some off.`):'Choose an object for the scale.';s+=` Jug: <b>${v} mL</b>${v===1000?' = 1 litre':v===500?' = half a litre':v===250?' = a quarter litre':''}.`;read.innerHTML=s};
+  el.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{obj=OBJ[+b.dataset.o];el.querySelectorAll('[data-o]').forEach(x=>x.classList.remove('on'));b.classList.add('on');el.querySelector('#lo').textContent=obj[0];upd()});el.querySelector('#wt').oninput=upd;el.querySelector('#vol').oninput=upd;upd();
+},
+graphs(el){
+  const F=[['🍎','Apples'],['🍌','Bananas'],['🍇','Grapes'],['🍉','Melon']];const V=[3,5,2,4];
+  el.innerHTML=`<h4>Lab: class survey, favourite fruit</h4><svg viewBox="0 0 400 190" id="gs"></svg><div class="ctl">${F.map((f,i)=>`<button class="sbtn" data-f="${i}">+1 ${f[0]}</button>`).join('')}<button class="sbtn alt" id="pic">Picture graph</button><button class="sbtn on" id="bar">Bar graph</button></div><div class="readout" id="gRead"></div>`;
+  let mode='bar';const svg=el.querySelector('#gs'),read=el.querySelector('#gRead');
+  const draw=()=>{const max=Math.max(...V,6);svg.innerHTML=`<line x1="50" y1="160" x2="390" y2="160" stroke="#141215" stroke-width="2"/><line x1="50" y1="20" x2="50" y2="160" stroke="#141215" stroke-width="2"/>`+(mode==='bar'?Array.from({length:max+1},(_,i)=>`<text x="42" y="${164-i*140/max}" font-size="10" text-anchor="end" font-family="Nunito" font-weight="800" fill="#6E6468">${i}</text><line x1="50" y1="${160-i*140/max}" x2="390" y2="${160-i*140/max}" stroke="#E9DEDF"/>`).join(''):'')+F.map((f,i)=>{const x=80+i*80;const h=V[i]*140/max;return mode==='bar'?`<rect x="${x}" y="${160-h}" width="50" height="${h}" fill="${V[i]===Math.max(...V)?'#C8102E':'#D4A937'}" style="transition:all .4s"/><text x="${x+25}" y="${152-h}" font-size="13" text-anchor="middle" font-family="Fredoka" font-weight="700" fill="#141215">${V[i]}</text><text x="${x+25}" y="180" font-size="18" text-anchor="middle">${f[0]}</text>`:Array.from({length:V[i]},(_,k)=>`<text x="${x+25}" y="${150-k*22}" font-size="20" text-anchor="middle">${f[0]}</text>`).join('')+`<text x="${x+25}" y="180" font-size="11" text-anchor="middle" font-family="Nunito" font-weight="800" fill="#6E6468">${f[1]}</text>`}).join('')+(mode==='pic'?`<text x="60" y="15" font-size="10" font-family="Nunito" font-weight="800" fill="#6E6468">Key: each picture = 1 student</text>`:'');
+    const top=V.indexOf(Math.max(...V)),low=V.indexOf(Math.min(...V));read.innerHTML=`<b>${F[top][1]}</b> is the most popular with ${V[top]} votes; <b>${F[low][1]}</b> the least with ${V[low]}. ${V[top]-V[low]} more students chose ${F[top][1].toLowerCase()} than ${F[low][1].toLowerCase()}. Total surveyed: <b>${V.reduce((a,b)=>a+b)}</b>. Add votes and watch the graph change.`};
+  el.querySelectorAll('[data-f]').forEach(b=>b.onclick=()=>{V[+b.dataset.f]++;draw()});el.querySelector('#pic').onclick=()=>{mode='pic';el.querySelector('#pic').classList.add('on');el.querySelector('#bar').classList.remove('on');draw()};el.querySelector('#bar').onclick=()=>{mode='bar';el.querySelector('#bar').classList.add('on');el.querySelector('#pic').classList.remove('on');draw()};draw();
+},
+magnets(el){
+  el.innerHTML=`<h4>Lab: magnets without touching</h4><svg viewBox="0 0 400 150"><rect x="20" y="55" width="90" height="40" rx="6" fill="#C8102E"/><text x="45" y="82" font-size="18" font-family="Fredoka" font-weight="700" fill="#fff">N</text><rect x="65" y="55" width="45" height="40" rx="6" fill="#141215"/><text x="80" y="82" font-size="18" font-family="Fredoka" font-weight="700" fill="#fff">S</text>
+  <g id="m2" style="transition:transform .7s"><rect id="m2a" x="250" y="55" width="45" height="40" rx="6" fill="#141215"/><text id="m2t1" x="265" y="82" font-size="18" font-family="Fredoka" font-weight="700" fill="#fff">S</text><rect id="m2b" x="295" y="55" width="45" height="40" rx="6" fill="#C8102E"/><text id="m2t2" x="310" y="82" font-size="18" font-family="Fredoka" font-weight="700" fill="#fff">N</text></g>
+  <text id="obj" x="270" y="85" font-size="30" opacity="0" style="transition:transform .7s">📎</text><text id="fl" x="200" y="130" font-size="14" text-anchor="middle" font-family="Nunito" font-weight="800" fill="#6E6468"></text></svg>
+  <div class="ctl"><button class="sbtn on" data-t="attract">Face S to N</button><button class="sbtn" data-t="repel">Face N to N</button><button class="sbtn" data-t="clip">Paper clip</button><button class="sbtn" data-t="cork">Cork</button><button class="sbtn alt" id="go">Bring it closer</button></div><div class="readout" id="mgRead">Magnets push or pull without touching. Choose what to bring near the red-black magnet.</div>`;
+  let t='attract';const m2=el.querySelector('#m2'),obj=el.querySelector('#obj'),read=el.querySelector('#mgRead'),fl=el.querySelector('#fl');
+  const set=()=>{m2.style.transform='';obj.style.transform='';fl.textContent='';const mag=t==='attract'||t==='repel';m2.style.opacity=mag?1:0;obj.style.opacity=mag?0:1;obj.textContent=t==='clip'?'📎':'🍾';
+    if(t==='repel'){el.querySelector('#m2a').setAttribute('fill','#C8102E');el.querySelector('#m2t1').textContent='N';el.querySelector('#m2b').setAttribute('fill','#141215');el.querySelector('#m2t2').textContent='S'}else{el.querySelector('#m2a').setAttribute('fill','#141215');el.querySelector('#m2t1').textContent='S';el.querySelector('#m2b').setAttribute('fill','#C8102E');el.querySelector('#m2t2').textContent='N'}};
+  el.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{t=b.dataset.t;el.querySelectorAll('[data-t]').forEach(x=>x.classList.remove('on'));b.classList.add('on');set();read.textContent='Now press Bring it closer.'});
+  el.querySelector('#go').onclick=()=>{set();requestAnimationFrame(()=>{if(t==='attract'){m2.style.transform='translateX(-140px)';fl.textContent='← pull →';read.innerHTML='<b>Opposite poles attract.</b> S faces N, and the magnets snap together before they even touch.'}else if(t==='repel'){m2.style.transform='translateX(50px)';fl.textContent='← push →';read.innerHTML='<b>Like poles repel.</b> N faces N, and the second magnet is pushed away. You can feel this force in your hands.'}else if(t==='clip'){obj.style.transform='translateX(-150px)';read.innerHTML='The steel paper clip <b>jumps to the magnet</b>. Magnets pull iron and steel, and the force works through air, paper, even water.'}else{read.innerHTML='Nothing happens. Cork, plastic, wood and paper are <b>not magnetic</b>. Only some metals (iron, steel, nickel) are.'}})};set();
+},
+climates(el){
+  const Z=[['🏜️','Desert','Riyadh, Sahara','Very hot days, cool nights, almost no rain. Plants store water; animals hide by day.',43,2],['🌴','Tropical rainforest','Amazon, Congo','Hot and wet all year. Rain almost every afternoon. More kinds of life than anywhere else.',30,250],['🌾','Temperate','London, New York','Warm summers, cold winters, rain in every season. Four clear seasons; trees drop their leaves.',20,60],['🧊','Polar','Arctic, Antarctica','Freezing all year, snow and ice. The sun barely rises in winter. Only a few animals, like penguins and polar bears.',-20,10],['⛰️','Mountain','Alps, Asir highlands','Colder the higher you climb. Snow on top even near the equator. Abha is cool while Jeddah below is hot.',10,80]];
+  el.innerHTML=`<h4>Lab: five climates, one world</h4><svg viewBox="0 0 400 170"><rect x="0" y="0" width="400" height="170" fill="#BFE3F5"/><ellipse cx="200" cy="85" rx="190" ry="70" fill="#D4A937" opacity="0.5"/>${Z.map((z,i)=>`<g class="zone" data-i="${i}" style="cursor:pointer"><circle cx="${60+i*70}" cy="${i%2?60:110}" r="26" fill="#fff" stroke="#C8102E" stroke-width="3" id="zc${i}"/><text x="${60+i*70}" y="${(i%2?60:110)+10}" font-size="26" text-anchor="middle">${z[0]}</text></g>`).join('')}
+  <rect x="330" y="20" width="16" height="130" rx="8" fill="#fff" stroke="#141215" stroke-width="2"/><rect id="cm" x="334" y="85" width="8" height="8" rx="4" fill="#C8102E" style="transition:all .5s"/><text id="ct" x="338" y="14" font-size="11" text-anchor="middle" font-family="Fredoka" font-weight="700" fill="#141215">°C</text>
+  <rect x="360" y="20" width="16" height="130" rx="8" fill="#fff" stroke="#141215" stroke-width="2"/><rect id="cr" x="364" y="146" width="8" height="0" rx="4" fill="#3B8BC9" style="transition:all .5s"/><text x="368" y="14" font-size="11" text-anchor="middle" font-family="Fredoka" font-weight="700" fill="#141215">rain</text></svg><div class="readout" id="clRead">Tap a climate zone. The left bar is a typical temperature, the right bar is monthly rain.</div>`;
+  el.querySelectorAll('.zone').forEach(g=>g.onclick=()=>{const z=Z[+g.dataset.i];el.querySelectorAll('[id^=zc]').forEach(c=>c.setAttribute('fill','#fff'));el.querySelector('#zc'+g.dataset.i).setAttribute('fill','#FBE7EA');const h=(z[4]+25)/70*120;const m=el.querySelector('#cm');m.style.y=(146-h)+'px';m.style.height=(h+4)+'px';const r=el.querySelector('#cr');const rh=Math.min(120,z[5]/2.2);r.style.y=(146-rh)+'px';r.style.height=(rh+4)+'px';el.querySelector('#ct').textContent=z[4]+'°C';
+    el.querySelector('#clRead').innerHTML=`<b>${z[1]}</b> (${z[2]}): ${z[3]} Typical: ${z[4]}°C, about ${z[5]} mm of rain a month.`});
+},
+hazards(el){
+  const H=[['🌪️','Sandstorm','A wall of dust rolls in. Visibility drops to a few metres.',['Close windows and doors','Stay indoors, cover nose and mouth','Drivers stop and turn on hazard lights'],['Plant tree belts to slow the wind','Weather warnings by phone before it hits']],
+   ['🌊','Flash flood','Rain on hard dry ground runs into wadis fast. Cars float in 30 cm of water.',['Never drive or walk into flowing water','Move to high ground','Wait: floods pass in hours'],['Build bridges and drains for wadis','Flood maps: do not build in the wadi bed']],
+   ['⚡','Lightning','A thunderstorm strikes tall objects and open ground.',['Go inside a building or car','Stay away from trees and metal poles','Wait 30 minutes after the last thunder'],['Lightning rods on tall buildings','Storm alerts for sports fields']],
+   ['🔥','Extreme heat','Days over 45°C. The body can overheat.',['Drink water often, even before thirst','Stay in shade or indoors 11am to 4pm','Wear light, loose clothes and a hat'],['Shaded walkways and bus stops','Cooling centres and school time changes']]];
+  el.innerHTML=`<h4>Lab: weather hazard drill</h4><svg viewBox="0 0 400 120"><rect x="0" y="80" width="400" height="40" fill="#D4A937"/><rect x="150" y="40" width="100" height="40" fill="#141215"/><polygon points="140,40 200,10 260,40" fill="#C8102E"/><rect x="190" y="55" width="20" height="25" fill="#D4A937"/><text id="hz" x="60" y="60" font-size="44" opacity="0" style="transition:all 1s"></text><text x="320" y="72" font-size="30">🧒</text></svg>
+  <div class="ctl">${H.map((h,i)=>`<button class="sbtn" data-h="${i}">${h[0]} ${h[1]}</button>`).join('')}</div><div class="readout" id="hzRead">Pick a hazard. Then choose: what do YOU do, and what can a TOWN build?</div><div class="ctl" id="hzBtns"></div>`;
+  el.querySelectorAll('[data-h]').forEach(b=>b.onclick=()=>{const h=H[+b.dataset.h];el.querySelectorAll('[data-h]').forEach(x=>x.classList.remove('on'));b.classList.add('on');const hz=el.querySelector('#hz');hz.textContent=h[0];hz.style.opacity=0;hz.style.transform='translateX(0)';requestAnimationFrame(()=>{hz.style.opacity=1;hz.style.transform='translateX(60px)'});
+    el.querySelector('#hzRead').innerHTML=`<b>${h[1]}</b>: ${h[2]}`;el.querySelector('#hzBtns').innerHTML=`<button class="sbtn alt" id="me">What do I do?</button><button class="sbtn" id="town">What can a town build?</button>`;
+    el.querySelector('#me').onclick=()=>el.querySelector('#hzRead').innerHTML=`<b>${h[1]}, you:</b> `+h[3].map((s,i)=>`${i+1}. ${s}`).join(' · ');el.querySelector('#town').onclick=()=>el.querySelector('#hzRead').innerHTML=`<b>${h[1]}, engineers:</b> `+h[4].map((s,i)=>`${i+1}. ${s}`).join(' · ')+'. Weather cannot be stopped, but its damage can be reduced.'});
+},
+fairtest(el){
+  el.innerHTML=`<h4>Lab: which paper plane flies farthest?</h4><svg viewBox="0 0 400 130"><line x1="20" y1="110" x2="390" y2="110" stroke="#141215" stroke-width="2"/>${[0,2,4,6,8].map(m=>`<line x1="${30+m*45}" y1="105" x2="${30+m*45}" y2="115" stroke="#141215" stroke-width="2"/><text x="${30+m*45}" y="127" font-size="10" text-anchor="middle" font-family="Nunito" font-weight="800" fill="#6E6468">${m} m</text>`).join('')}<text id="pl" x="30" y="60" font-size="30" style="transition:transform 1.2s ease-out">✈️</text></svg>
+  <div class="ctl"><label>Design <select id="dsn" style="font:inherit;padding:6px;border-radius:8px;border:2px solid var(--line);background:var(--bg);color:var(--ink)"><option value="dart">Dart (narrow)</option><option value="glider">Glider (wide wings)</option></select></label><label>Throw <select id="thr" style="font:inherit;padding:6px;border-radius:8px;border:2px solid var(--line);background:var(--bg);color:var(--ink)"><option value="soft">soft</option><option value="hard">hard</option></select></label><label>Paper <select id="ppr" style="font:inherit;padding:6px;border-radius:8px;border:2px solid var(--line);background:var(--bg);color:var(--ink)"><option value="normal">normal</option><option value="thick">thick card</option></select></label><button class="sbtn alt" id="fly">Throw</button><button class="sbtn" id="clrL">Clear log</button></div>
+  <div class="readout" id="ftRead">Change ONE thing at a time. Keep everything else the same. That is a fair test.</div><div id="log" class="note" style="margin-top:6px"></div>`;
+  const log=[];const pl=el.querySelector('#pl'),read=el.querySelector('#ftRead');
+  el.querySelector('#fly').onclick=()=>{const d=el.querySelector('#dsn').value,t=el.querySelector('#thr').value,p=el.querySelector('#ppr').value;let dist=(d==='dart'?5:3.5)+(t==='hard'?1.5:0)+(p==='thick'?-1:0)+(Math.random()*0.6-0.3);dist=Math.round(dist*10)/10;pl.style.transform='';requestAnimationFrame(()=>pl.style.transform=`translateX(${dist*45}px)`);log.push({d,t,p,dist});
+    el.querySelector('#log').innerHTML=log.slice(-6).map(r=>`${r.d} · ${r.t} throw · ${r.p} paper → <b>${r.dist} m</b>`).join('<br>');
+    if(log.length>=2){const a=log[log.length-2],b=log[log.length-1];const ch=['d','t','p'].filter(k=>a[k]!==b[k]).length;read.innerHTML=ch===0?`Same settings, ${a.dist} m then ${b.dist} m. Small differences are normal, so scientists <b>repeat</b> and take the average.`:ch===1?`✅ <b>Fair test!</b> You changed one thing and kept the rest the same, so the difference (${a.dist} m → ${b.dist} m) is caused by that change.`:`❌ You changed <b>${ch} things</b> at once. If it flew differently, which change did it? You cannot tell. Change only one.`}else read.innerHTML=`Flew <b>${dist} m</b>. Now change exactly one setting and throw again.`};
+  el.querySelector('#clrL').onclick=()=>{log.length=0;el.querySelector('#log').innerHTML='';pl.style.transform=''};
+},
+events(el){
+  el.innerHTML=`<h4>Lab: the bug-catcher game (events & variables)</h4><div style="position:relative;height:150px;background:var(--red-soft);border-radius:14px;overflow:hidden" id="stage"><div id="scoreBox" style="position:absolute;top:8px;left:10px;font-family:var(--font-d);font-size:1.1rem">score = <b id="sc">0</b> &nbsp; lives = <b id="lv">3</b></div><button id="bug" style="position:absolute;left:40%;top:50%;font-size:2rem;background:none;border:0;cursor:pointer;transition:left .3s,top .3s">🐞</button></div>
+  <div class="ctl"><button class="sbtn alt" id="start">Start</button><span class="note">Rule: <b>when</b> bug clicked → score + 1 · <b>when</b> 3 seconds pass → lives − 1</span></div><div class="readout" id="evRead">A <b>variable</b> is a box that holds a number that can change (score, lives). An <b>event</b> is something that happens (a click, a timer) that triggers code.</div>`;
+  let sc=0,lv=3,tm=null,on=false;const bug=el.querySelector('#bug'),read=el.querySelector('#evRead');
+  const move=()=>{bug.style.left=(5+Math.random()*80)+'%';bug.style.top=(20+Math.random()*60)+'%'};
+  const tick=()=>{if(!on)return;lv--;el.querySelector('#lv').textContent=lv;read.innerHTML=`⏱️ <b>Timer event</b>: 3 seconds passed → lives − 1. lives is now ${lv}.`;if(lv<=0){on=false;read.innerHTML=`Game over. Final score = <b>${sc}</b>. The score variable went up on every click event; the lives variable went down on every timer event.`;return}move();tm=setTimeout(tick,3000)};
+  bug.onclick=()=>{if(!on)return;sc++;el.querySelector('#sc').textContent=sc;read.innerHTML=`🖱️ <b>Click event</b>: bug clicked → score + 1. score is now ${sc}.`;clearTimeout(tm);move();tm=setTimeout(tick,3000)};
+  el.querySelector('#start').onclick=()=>{clearTimeout(tm);sc=0;lv=3;on=true;el.querySelector('#sc').textContent=0;el.querySelector('#lv').textContent=3;move();read.textContent='Go! Click the bug before 3 seconds pass.';tm=setTimeout(tick,3000)};
+  el._stop=()=>{on=false;clearTimeout(tm)};
+},
+design(el){
+  el.innerHTML=`<h4>Lab: test your paper bridge</h4>
+  <svg viewBox="0 0 400 150"><rect x="20" y="90" width="70" height="60" fill="#141215"/><rect x="310" y="90" width="70" height="60" fill="#141215"/><text x="35" y="130" font-size="12" fill="#fff" font-family="Nunito" font-weight="800">book</text><text x="325" y="130" font-size="12" fill="#fff" font-family="Nunito" font-weight="800">book</text>
+  <path id="br" d="M90 90 Q200 90 310 90" stroke="#C8102E" stroke-width="8" fill="none" style="transition:d .6s"/><g id="carG" style="transition:transform .6s"></g></svg>
+  <div class="ctl"><button class="sbtn on" data-s="0">Flat sheet</button><button class="sbtn" data-s="1">Folded zigzag</button><button class="sbtn" data-s="2">Rolled tubes</button><label>Cars <input type="range" id="cars" min="1" max="3" value="1"></label><button class="sbtn alt" id="test">Test it</button></div><div class="readout" id="dRead">Pick a shape, choose how many cars, then test. Which shape holds the most?</div>`;
+  const hold=[0,2,3],names=['Flat sheet','Folded zigzag','Rolled tubes'];let shape=0;const br=el.querySelector('#br'),read=el.querySelector('#dRead');
+  el.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{shape=+b.dataset.s;el.querySelectorAll('[data-s]').forEach(x=>x.classList.remove('on'));b.classList.add('on');br.setAttribute('d','M90 90 Q200 90 310 90');el.querySelector('#carG').innerHTML='';el.querySelector('#carG').style.transform='';read.innerHTML=`<b>${names[shape]}</b> chosen.`});
+  el.querySelector('#test').onclick=()=>{const n=+el.querySelector('#cars').value;const cg=el.querySelector('#carG');cg.innerHTML=Array.from({length:n},(_,i)=>`<text x="${170+i*30-n*10}" y="80" font-size="24">🚗</text>`).join('');const ok=n<=hold[shape];const sag=ok?90+n*12*(shape===2?0.4:1):150;let k=0;const tw=()=>{k=Math.min(1,k+0.05);const y=90+(sag-90)*k;br.setAttribute('d',`M90 90 Q200 ${y} 310 90`);cg.style.transform=`translateY(${ok?(y-90)/2:(y-90)*1.2}px)`;if(k<1)requestAnimationFrame(tw)};tw();
+    read.innerHTML=ok?`✅ <b>${names[shape]}</b> holds ${n} car${n>1?'s':''}! ${shape===2?'Tubes spread the weight along their curve, so they barely bend.':'The folds work like tiny beams that resist bending.'}`:`💥 <b>${names[shape]}</b> collapsed under ${n} car${n>1?'s':''}. ${shape===0?'A flat sheet has no structure to resist bending. Change the shape, not the paper.':'Too heavy. Try a stronger shape or fewer cars.'}`};
+}};
+
+/* ---------- content ---------- */
+const MODULES=[
+ {id:'forces',ico:'🍎',title:'Forces & Motion',subject:'Physics',desc:'Pushes, pulls, gravity and friction.',
+  cards:[['What is a force?','A force is a push or a pull. You cannot see a force, but you can see what it does: it makes things start moving, stop, speed up, slow down or change direction. Kicking a ball is a push. Opening a drawer is a pull.'],
+   ['Gravity pulls down','Gravity is a pull from the Earth. It works on everything, all the time, even when you are not touching anything. It is why a dropped apple falls and why you come back down after a jump. The bigger the Earth, the stronger its pull.'],
+   ['Friction slows things','When two surfaces rub against each other, they make friction. Friction is a force that works against motion. Rough surfaces (carpet, sand) make lots of friction. Smooth surfaces (ice, a polished floor) make very little. Try the lab: the same push goes much further on ice.'],
+   ['Balanced and unbalanced','If two forces push equally in opposite directions, they are balanced and nothing changes. A book resting on a table is balanced: gravity pulls down, the table pushes up. When forces are unbalanced, something moves.']],
+  quiz:[{q:'You slide a book across the table and it stops. What slowed it down?',a:'Friction',w:['Gravity','Magnetism','Light'],e:'The book and table rub together. That rubbing is friction, and it always works against motion.'},
+        {q:'A push and a pull are both examples of a…',a:'Force',w:['Shadow','Sound','Color'],e:'Every force is a push or a pull. That is the definition.'},
+        {q:'Which force pulls a dropped apple toward the ground?',a:'Gravity',w:['Friction','Wind','Electricity'],e:'Gravity is the Earth pulling everything toward its centre.'},
+        {q:'Which surface would let a toy car roll the farthest?',a:'Smooth ice',w:['Thick carpet','Dry sand','Grass'],e:'Smooth surfaces make the least friction, so the car keeps its speed longer.'}]},
+ {id:'matter',ico:'🧊',title:'States of Matter',subject:'Physical Science',desc:'Solids, liquids and gases. Heat them up!',
+  cards:[['Everything is matter','Your desk, your juice, the air you breathe: all of it is matter. Matter is made of tiny particles far too small to see. How those particles move decides whether something is a solid, a liquid or a gas.'],
+   ['Solids hold their shape','In a solid the particles are packed tightly in a pattern and only wiggle in place. That is why a rock or an ice cube keeps its shape. You can pick it up and it stays the same.'],
+   ['Liquids flow','In a liquid the particles are still close together but they can slide past each other. That is why water pours and takes the shape of any cup. It keeps the same amount, just a different shape.'],
+   ['Gases spread out','In a gas the particles zoom around with lots of space between them. A gas spreads to fill any container. That is why a balloon gets round and why you can smell dinner from another room.'],
+   ['Heat changes the state','Add heat and the particles move faster. Ice (solid) melts into water (liquid) at 0°C. Water boils into steam (gas) at 100°C. Take heat away and it goes back. Same water, three states.']],
+  dnd:{bins:['Solid','Liquid','Gas'],items:[['Ice cube','Solid'],['Milk','Liquid'],['Steam','Gas'],['Rock','Solid'],['Honey','Liquid'],['Air in a balloon','Gas'],['Wooden block','Solid'],['Orange juice','Liquid'],['Helium','Gas']]},
+  quiz:[{q:'Which state of matter keeps its own shape?',a:'Solid',w:['Liquid','Gas','Plasma'],e:'In a solid the particles are locked in a pattern, so the shape stays.'},
+        {q:'When ice melts it turns into a…',a:'Liquid',w:['Gas','Solid','Rock'],e:'Melting is solid to liquid. Heat lets the particles slide past each other.'},
+        {q:'Which state spreads out to fill a whole room?',a:'Gas',w:['Solid','Liquid','Sand'],e:'Gas particles have lots of space and move freely in every direction.'}]},
+ {id:'machines',ico:'⚙️',title:'Simple Machines',subject:'Engineering',desc:'Levers, ramps, wheels and pulleys.',
+  cards:[['Machines make work easier','A simple machine has few or no moving parts, but it changes how much force you need. It does not do the work for you; it lets you trade a small push over a long distance for a big push over a short one.'],
+   ['The lever','A lever is a stiff bar that turns on a fixed point, the fulcrum. Put the fulcrum close to the heavy thing and a small push on the long end lifts it. A seesaw, a spoon flicking peas, and a bottle opener are levers. Try sliding the fulcrum in the lab.'],
+   ['The inclined plane','A ramp. Pushing a box up a long ramp needs less force than lifting it straight up, because you spread the work over a longer path. Wheelchair ramps and mountain roads that zigzag are inclined planes.'],
+   ['Wheel and axle','A wheel fixed to a rod. Turning the big wheel a little turns the small axle with a lot of force. Doorknobs, steering wheels and bicycle pedals all use it. Wheels also beat friction: rolling is easier than sliding.'],
+   ['The pulley','A wheel with a rope over it. One pulley changes the direction of your pull, so you can raise a flag by pulling down. Add more pulleys and you need even less force to lift the same load.']],
+  quiz:[{q:'A seesaw at the park is an example of a…',a:'Lever',w:['Pulley','Screw','Wedge'],e:'A seesaw is a bar that turns on a fulcrum in the middle.'},
+        {q:'Which simple machine helps raise a flag up a flagpole?',a:'Pulley',w:['Ramp','Lever','Wheel and axle'],e:'The rope goes over a wheel at the top, so pulling down lifts the flag up.'},
+        {q:'A ramp is another name for an…',a:'Inclined plane',w:['Axle','Engine','Elevator'],e:'Inclined means tilted. A ramp is a tilted flat surface.'},
+        {q:'To lift a heavy rock with a lever, where should the fulcrum go?',a:'Close to the rock',w:['Close to your hand','Exactly in the middle','It makes no difference'],e:'A short arm on the rock side and a long arm on your side means a small push lifts a big load.'}]},
+ {id:'earth',ico:'🌦️',title:'Weather & Climate',subject:'Earth Science',desc:'Riyadh through the year.',
+  cards:[['Weather is today','Weather is what the sky is doing right now: sunny, windy, dusty, cloudy or rainy. It can change in a few hours. A sandstorm in the afternoon and a clear night are both weather.'],
+   ['Climate is the pattern','Climate is the usual weather of a place over many years. Riyadh has a hot desert climate: very hot summers, mild winters and very little rain. Slide through the months in the lab to see the pattern.'],
+   ['Measuring weather','Scientists use tools. A thermometer measures temperature. An anemometer spins to measure wind speed. A rain gauge collects rain. A barometer measures air pressure, which helps predict storms.'],
+   ['Why seasons happen','The Earth is tilted as it goes around the Sun. In summer our part of the Earth leans toward the Sun, so the Sun climbs higher and heats us longer. In winter we lean away, the Sun stays lower, and days are cooler.']],
+  quiz:[{q:'What tool measures temperature?',a:'Thermometer',w:['Telescope','Ruler','Compass'],e:'Thermo means heat. A thermometer shows how hot or cold it is.'},
+        {q:'The usual weather in a place over many years is called its…',a:'Climate',w:['Forecast','Storm','Season'],e:'Weather is today; climate is the long-term pattern.'},
+        {q:'Which describes Riyadh in summer?',a:'Hot and dry',w:['Cold and snowy','Cool and rainy','Humid and foggy'],e:'Riyadh afternoons in July and August are often above 43°C with almost no rain.'},
+        {q:'Which tool measures wind speed?',a:'Anemometer',w:['Thermometer','Microscope','Calculator'],e:'An anemometer has little cups that spin faster in stronger wind.'}]},
+ {id:'ecosystems',ico:'🦎',title:'Desert Ecosystems',subject:'Life Science',desc:'How living things depend on each other.',
+  cards:[['What is an ecosystem?','An ecosystem is all the living things in a place (plants, animals, insects) plus the non-living things they need (sun, water, soil, rocks). The desert around Riyadh is an ecosystem.'],
+   ['Food chains','Every animal needs energy, and energy comes from eating. A food chain shows who eats whom. It always starts with a plant, because plants make their own food from sunlight. Play the lab to watch the energy move.'],
+   ['Adaptations','An adaptation is a body part or habit that helps a living thing survive where it lives. A camel has wide feet for sand, long eyelashes for dust, and a hump that stores fat for long journeys. Desert plants have tiny leaves so they lose less water.'],
+   ['Surviving the heat','Many desert animals are nocturnal: they sleep in burrows during the hot day and come out at night when it is cool. Others, like the sand gecko, stay under rocks. Staying cool saves water.'],
+   ['Everything is connected','Remove one living thing and the others feel it. With no lizards, the falcons go hungry and the ants multiply. That is why protecting every part of an ecosystem matters.']],
+  quiz:[{q:'Why do many desert animals come out at night?',a:'It is cooler',w:['They are afraid of birds','The sand is softer','There is more rain'],e:'Night is cooler, so animals lose less water and stay safe from the heat.'},
+        {q:'A body feature that helps an animal survive is called an…',a:'Adaptation',w:['Accident','Instrument','Experiment'],e:'Adaptations develop over many generations to fit the place the animal lives.'},
+        {q:'Which animal stores fat in its hump?',a:'Camel',w:['Falcon','Gecko','Goat'],e:'The hump is fat, not water. The camel uses it for energy when food is scarce.'},
+        {q:'Every food chain starts with a…',a:'Plant',w:['Falcon','Lizard','Rock'],e:'Plants make food from sunlight. Every other link gets its energy by eating.'}]},
+ {id:'coding',ico:'💻',title:'Coding Logic',subject:'Tech / Coding',desc:'Sequences, loops and bugs.',
+  cards:[['Computers follow instructions','A computer is very fast but not clever. It does exactly what it is told, in exactly the order it is told. Writing those instructions is called coding, and the instructions are a program.'],
+   ['Sequence','Order matters. "Put on socks, then shoes" works. "Put on shoes, then socks" does not. Programmers plan each step and check the order. Try the robot lab: one wrong step and the robot misses the star.'],
+   ['Loops','If you need to do the same thing many times, you use a loop. Instead of writing "move forward" four times, you write "repeat 4 times: move forward". Loops make programs shorter and easier to fix.'],
+   ['Conditions (if… then)','Programs can make choices. "If it is raining, then take an umbrella." "If the robot hits a wall, then turn around." The computer checks whether something is true and picks what to do.'],
+   ['Bugs and debugging','When a program does the wrong thing, the mistake is called a bug. Finding and fixing bugs is called debugging. Every programmer makes bugs. Good programmers test, spot the problem, and fix one thing at a time.']],
+  quiz:[{q:'"Clap 10 times" in code is best done with a…',a:'Loop',w:['Bug','Password','Mouse'],e:'A loop repeats an instruction, so you write it once and say how many times.'},
+        {q:'A mistake in a program is called a…',a:'Bug',w:['Pixel','Cloud','Robot'],e:'Fixing it is called debugging.'},
+        {q:'Instructions run in order, one after another. This order is called a…',a:'Sequence',w:['Sandwich','Guess','Shadow'],e:'Sequence means the steps happen one after another in a fixed order.'},
+        {q:'"If it is dark, then turn on the light" is an example of a…',a:'Condition',w:['Loop','Bug','Keyboard'],e:'A condition lets the program check something and choose what to do.'}]},
+ {id:'lifecycles',ico:'🦋',title:'Life Cycles',subject:'Life Science',desc:'Egg to butterfly, seed to flower.',
+  cards:[['Every living thing has a life cycle','A life cycle is the set of stages a living thing goes through: it is born, it grows, it makes new living things, and it dies. Then its offspring start the cycle again. That is why it is drawn as a circle.'],
+   ['Butterflies change completely','A butterfly starts as an egg, hatches into a caterpillar, wraps itself in a chrysalis, and comes out as a butterfly. The caterpillar and butterfly look nothing alike. This full change is called metamorphosis.'],
+   ['Frogs change too','A tadpole has gills and a tail and lives only in water, like a fish. Slowly it grows legs and lungs and loses its tail, until it can hop onto land. Same animal, two very different bodies.'],
+   ['Plants have life cycles','A seed sprouts, grows leaves, makes flowers, and the flowers make new seeds. Some plants finish their cycle in one summer. A date palm takes years before it makes its first dates, and then lives for decades.'],
+   ['Different cycles, same pattern','A mouse lives about two years. A tortoise can live over a hundred. A butterfly adult may live only two weeks. The lengths differ, but every cycle has the same four parts: birth, growth, reproduction, death.']],
+  quiz:[{q:'What comes right after the egg in a butterfly\'s life cycle?',a:'Caterpillar (larva)',w:['Chrysalis','Butterfly','Seed'],e:'The egg hatches into a caterpillar, which eats and grows before making its chrysalis.'},
+        {q:'A tadpole breathes with…',a:'Gills, like a fish',w:['Lungs, like a frog','Its skin only','Its tail'],e:'Tadpoles live underwater and use gills. Lungs grow later as they become frogs.'},
+        {q:'Why is a life cycle drawn as a circle?',a:'Because the offspring start the same stages again',w:['Because animals are round','Because it looks nice','Because animals walk in circles'],e:'The adult makes new eggs or seeds, and those begin the same stages all over again.'},
+        {q:'Which is the correct order for a sunflower?',a:'Seed → sprout → plant → flower → seed',w:['Flower → seed → sprout → seed','Sprout → seed → flower','Plant → seed → sprout → flower'],e:'The seed sprouts, the plant grows, the flower makes new seeds, and the cycle repeats.'}]},
+ {id:'traits',ico:'🧬',title:'Traits: Inherited or Learned?',subject:'Life Science',desc:'What comes from parents, what comes from life.',
+  cards:[['What is a trait?','A trait is a feature of a living thing: eye colour, height, a dog\'s floppy ears, a cat\'s stripes. Some traits you are born with. Others you pick up as you live.'],
+   ['Inherited traits come from parents','Eye colour, hair colour, the shape of your nose, whether you can roll your tongue: these are passed from parents to children. Two red-flowered plants make red-flowered seeds. Baby giraffes are born with spots because their parents have spots.'],
+   ['Learned traits come from experience','Speaking Arabic and English, riding a bike, knowing your multiplication tables, liking spicy food: nobody is born with these. You learn them by practising and by living where you live.'],
+   ['The environment changes traits too','Two seeds from the same plant, one in full sun with water and one in shade with little water, grow to very different heights. The colour is inherited, but the size depends on the environment. Try it in the lab.'],
+   ['Variation','Even brothers and sisters are not identical. Each gets a slightly different mix from the parents. This variation is why no two people, cats or camels look exactly the same.']],
+  dnd:{bins:['Inherited','Learned'],items:[['Brown eyes','Inherited'],['Speaking Arabic','Learned'],['Curly hair','Inherited'],['Riding a bike','Learned'],['A cat\'s stripes','Inherited'],['A dog sitting on command','Learned'],['Freckles','Inherited'],['Reading','Learned']]},
+  quiz:[{q:'Which trait is inherited from parents?',a:'Eye colour',w:['Speaking English','Riding a bike','Liking pizza'],e:'Eye colour is passed down in the parents\' genes. The others are learned.'},
+        {q:'A red-flowered plant grown in the shade will most likely have…',a:'Red flowers but a shorter stem',w:['Yellow flowers','No flowers, ever','Blue flowers'],e:'Colour is inherited, so it stays red. Height depends on the environment, so shade makes it shorter.'},
+        {q:'Why does a lion cub know how to hunt well only when it is older?',a:'Hunting skill is learned by practising',w:['It is born with the skill','Its fur must grow first','Lions never learn'],e:'Cubs are born able to pounce, but the skill of hunting is learned by watching and practising.'},
+        {q:'Brothers and sisters look similar but not identical. This is called…',a:'Variation',w:['Copying','Metamorphosis','Friction'],e:'Each child gets a different mix of traits from the two parents.'}]},
+ {id:'fossils',ico:'🐚',title:'Fossils & Changing Earth',subject:'Life Science',desc:'Sea shells in the desert? Dig and find out.',
+  cards:[['What is a fossil?','A fossil is what is left of a plant or animal that lived long ago, kept in rock. It can be a bone, a shell, a tooth, a leaf print or even a footprint. Most living things never become fossils; it takes the right conditions.'],
+   ['How fossils form','An animal dies and is quickly covered by mud or sand. Over thousands of years more layers pile on top. The weight squeezes the layers into rock, and minerals slowly replace the bone, turning it to stone.'],
+   ['Deeper means older','Layers of rock stack up over time, so the bottom layer was made first. When you dig down, you travel back in time. Fossils in deep layers are older than fossils near the top.'],
+   ['Sea shells in Saudi Arabia','Fossils of sea shells and fish are found in the rocks around Riyadh. That tells us this land was once under a warm sea, millions of years ago. Environments change: seas dry up, rivers move, forests become deserts.'],
+   ['Fossils tell a story','From fossils, scientists learn what animals lived here, what they ate, and what the climate was like. Some fossils are of animals that no longer exist anywhere. They are extinct.']],
+  quiz:[{q:'Sea-shell fossils are found near Riyadh. What does that tell us?',a:'This land was once under the sea',w:['Someone dropped shells there','Shells grow in sand','The desert has always been dry'],e:'Sea creatures only live in the sea, so the rock they are in must have formed under water.'},
+        {q:'In a stack of rock layers, where is the oldest fossil?',a:'In the bottom layer',w:['In the top layer','In the middle','They are all the same age'],e:'Layers pile up over time, so the bottom one was laid down first.'},
+        {q:'What is a fossil?',a:'The remains or print of a living thing from long ago, kept in rock',w:['A very old rock','A dinosaur egg','A shell on the beach today'],e:'Fossils are what is left of ancient plants and animals, preserved in rock.'},
+        {q:'An animal that no longer exists anywhere on Earth is…',a:'Extinct',w:['Nocturnal','Inherited','Hibernating'],e:'Extinct means the whole species has died out. Fossils are how we know it lived.'}]},
+ {id:'groups',ico:'🐜',title:'Living in Groups',subject:'Life Science',desc:'Why ants, meerkats and wolves team up.',
+  cards:[['Some animals live in groups','Ants live in colonies, wolves in packs, meerkats in mobs, fish in schools, and birds in flocks. Living together takes work, so there must be good reasons for it.'],
+   ['Safety in numbers','With many eyes, someone always spots danger. Meerkats take turns as lookout while the others dig for food. A school of fish confuses a shark, which cannot pick one target. Play the lab to see the lookout in action.'],
+   ['Finding food together','Wolves hunting as a pack can catch animals much bigger than themselves. Ants leave scent trails so the whole colony finds food one scout discovered. Honeybees dance to tell each other where flowers are.'],
+   ['Raising young','Elephants walk with the calves in the middle of the herd. In a meerkat mob, older sisters and brothers babysit. Penguin fathers huddle together to keep eggs warm through the Antarctic winter.'],
+   ['Groups have jobs','In an ant colony the queen lays eggs, workers gather food and build, and soldiers defend. Each ant does one job well, and the colony does everything. That is a bit like a city.']],
+  quiz:[{q:'Why does a meerkat group have a lookout?',a:'To spot danger early while the others find food',w:['Because it is bored','To look for rain','To count the group'],e:'With a lookout on guard, the rest of the group can dig safely.'},
+        {q:'How does a pack help wolves?',a:'They can catch bigger prey together',w:['They run faster alone','They need less food','Packs are warmer in summer'],e:'A pack can surround and tire out an animal far larger than one wolf could catch.'},
+        {q:'In an ant colony, who lays the eggs?',a:'The queen',w:['The soldiers','The workers','Every ant'],e:'Ant colonies divide the jobs: the queen lays eggs, workers gather food, soldiers defend.'},
+        {q:'Where do elephants keep their calves when walking?',a:'In the middle of the herd',w:['At the front','Far behind','Up a tree'],e:'Surrounded by adults, the calves are protected from lions.'}]},
+ {id:'multiply',ico:'✖️',title:'Multiplication & Division',subject:'Math',desc:'Arrays, groups and sharing.',
+  cards:[['Multiplication is repeated adding','3 × 4 means 3 groups of 4: 4 + 4 + 4 = 12. Instead of adding the same number again and again, you multiply. Build it in the lab: rows and columns make an array.'],
+   ['Arrays show it two ways','3 rows of 4 dots is 12 dots. Turn your head: it is also 4 rows of 3. So 3 × 4 = 4 × 3. You can swap the numbers and the answer stays the same.'],
+   ['Division is sharing or grouping','12 ÷ 4 asks: 12 shared into 4 equal groups gives how many each? (3.) Or: how many groups of 4 fit in 12? (3.) Division undoes multiplication, the way subtraction undoes addition.'],
+   ['Fact families','3 × 4 = 12, 4 × 3 = 12, 12 ÷ 3 = 4, 12 ÷ 4 = 3. Four facts, one family, one array. If you know one, you know all four.'],
+   ['Tricks that help','Times 2: double it. Times 5: count by fives, the answer ends in 0 or 5. Times 10: add a zero. Times 9: the digits of the answer add up to 9 (9×4=36, 3+6=9). Times 1: the number stays the same. Times 0: always 0.']],
+  quiz:[{q:'6 × 4 = ?',a:'24',w:['20','28','10'],e:'6 groups of 4: 4+4+4+4+4+4 = 24. Or 4 sixes: 6, 12, 18, 24.'},
+        {q:'There are 20 dates shared equally among 5 children. How many does each child get?',a:'4',w:['5','15','25'],e:'20 ÷ 5 = 4. Check: 5 × 4 = 20.'},
+        {q:'Which fact belongs to the same family as 7 × 3 = 21?',a:'21 ÷ 7 = 3',w:['21 + 7 = 28','7 + 3 = 10','21 × 3 = 63'],e:'A fact family uses the same three numbers in multiplication and division: 7, 3 and 21.'},
+        {q:'9 × 6 = ?',a:'54',w:['56','45','63'],e:'9 × 6 = 54. Check the nine trick: 5 + 4 = 9.'},
+        {q:'A box has 8 rows of 3 eggs. How many eggs?',a:'24',w:['11','21','16'],e:'8 rows × 3 = 24 eggs. An array makes it easy to count.'}]},
+ {id:'fractions',ico:'🍫',title:'Fractions',subject:'Math',desc:'Equal parts of a whole.',
+  cards:[['A fraction is part of a whole','Cut a chocolate bar into 4 equal pieces. Each piece is one quarter: 1/4. Eat 3 of them and you ate 3/4. The parts must be equal, or it is not a fraction.'],
+   ['Top and bottom','The bottom number (denominator) tells how many equal parts the whole was cut into. The top number (numerator) tells how many of those parts you have. 3/8 means 8 equal parts, you have 3.'],
+   ['More pieces, smaller pieces','Which is bigger, 1/2 or 1/8? A half is much bigger. When you cut into more pieces, each piece gets smaller. So 1/8 < 1/4 < 1/2. Try it in the lab.'],
+   ['Fractions on a number line','Fractions live between 0 and 1. Cut the line into 4 equal jumps and 1/4, 2/4, 3/4 are the marks along the way. 4/4 is the whole, which is 1.'],
+   ['Equivalent fractions','1/2, 2/4 and 4/8 are the same amount, cut differently. Half a bar is half a bar whether it is one big piece or four small ones. Fractions that name the same amount are equivalent.']],
+  quiz:[{q:'A pizza is cut into 8 equal slices. You eat 3. What fraction did you eat?',a:'3/8',w:['8/3','3/5','1/3'],e:'8 equal parts (bottom), you have 3 (top): 3/8.'},
+        {q:'Which is the biggest piece?',a:'1/2',w:['1/4','1/8','1/6'],e:'Fewer pieces means bigger pieces. A half is bigger than a quarter, a sixth or an eighth.'},
+        {q:'Which fraction equals one whole?',a:'4/4',w:['1/4','4/1','0/4'],e:'All 4 of the 4 parts is the whole thing, which is 1.'},
+        {q:'Which fraction is the same as 1/2?',a:'2/4',w:['1/4','2/3','3/4'],e:'2 out of 4 equal parts is half. They are equivalent fractions.'},
+        {q:'Where is 3/4 on a number line from 0 to 1?',a:'Three of four equal jumps from 0',w:['Past 1','Exactly at 0','Halfway between 0 and 1'],e:'Cut the line into 4 equal jumps; 3/4 is the third mark, close to 1.'}]},
+ {id:'area',ico:'📐',title:'Area & Perimeter',subject:'Math',desc:'Tiles inside, fence around.',
+  cards:[['Perimeter is the walk around','Perimeter is the distance all the way around a shape. For a rectangle, add all four sides: length + width + length + width. If you built a fence around a garden, the fence length is the perimeter.'],
+   ['Area is the space inside','Area is how many unit squares cover a shape. A floor 5 metres long and 3 wide needs 15 one-metre tiles, so its area is 15 square metres. Lay the tiles in the lab and count them.'],
+   ['Multiply to find area','Instead of counting every tile, count the rows and how many in each row. 3 rows of 5 tiles is 3 × 5 = 15. Area of a rectangle = length × width. This is the array from multiplication again.'],
+   ['Units matter','Perimeter is measured in lengths: metres or centimetres. Area is measured in squares: square metres or square centimetres, written m² or cm². A 1 cm² square is about the size of your fingernail.'],
+   ['Same area, different perimeter','A 1 × 12 rectangle and a 3 × 4 rectangle both have area 12. But the long thin one has perimeter 26, the squarer one only 14. Shape changes the perimeter even when the area stays the same.']],
+  quiz:[{q:'A rectangle is 6 cm long and 2 cm wide. What is its perimeter?',a:'16 cm',w:['12 cm','8 cm','24 cm'],e:'6 + 2 + 6 + 2 = 16 cm all the way around.'},
+        {q:'A floor is 4 m by 5 m. How many 1 m tiles cover it?',a:'20',w:['9','18','45'],e:'4 rows of 5 tiles = 4 × 5 = 20 square metres.'},
+        {q:'Area is measured in…',a:'Square units, like cm²',w:['Plain lengths, like cm','Litres','Grams'],e:'Area counts squares, so its unit is square centimetres or square metres.'},
+        {q:'Which rectangle has the biggest area?',a:'3 × 5',w:['2 × 6','1 × 10','4 × 3'],e:'3 × 5 = 15. The others are 12, 10 and 12.'},
+        {q:'Two gardens have area 12 m². Which needs MORE fence?',a:'The 1 × 12 one',w:['The 3 × 4 one','They need the same','Neither needs a fence'],e:'1 × 12 has perimeter 26 m; 3 × 4 has 14 m. Long thin shapes have long perimeters.'}]},
+ {id:'time',ico:'🕒',title:'Telling Time',subject:'Math',desc:'Clocks, minutes and elapsed time.',
+  cards:[['Two hands, two jobs','The short hand points to the hour. The long hand points to the minutes. When the long hand points straight up at 12, it is exactly o\'clock.'],
+   ['Count minutes by fives','The clock face has 12 numbers, and there are 5 minutes between each one. So the minute hand at the 3 means 15 minutes, at the 6 means 30, at the 9 means 45. Count by fives around the clock.'],
+   ['Quarter past, half past, quarter to','15 minutes is a quarter of an hour, so 3:15 is quarter past three. 3:30 is half past three. 3:45 is quarter to four, because it is 15 minutes before four o\'clock.'],
+   ['Elapsed time','Elapsed time is how much time passes between a start and an end. Football starts at 4:30 and ends at 5:15: that is 30 minutes to reach 5:00, then 15 more. 45 minutes. Try the +45 button in the lab.'],
+   ['a.m. and p.m.','The clock goes around twice each day. From midnight to noon is a.m. (morning). From noon to midnight is p.m. (afternoon and night). 7 a.m. is breakfast time; 7 p.m. is dinner time.']],
+  quiz:[{q:'The short hand points at 4 and the long hand points at 6. What time is it?',a:'4:30',w:['6:20','4:06','6:04'],e:'Short hand = hour (4). Long hand at the 6 = 6 × 5 = 30 minutes. Half past four.'},
+        {q:'What is another way to say 8:45?',a:'Quarter to nine',w:['Quarter past eight','Half past eight','Quarter to eight'],e:'8:45 is 15 minutes before 9:00, so quarter to nine.'},
+        {q:'A film starts at 2:15 and lasts 1 hour 30 minutes. When does it end?',a:'3:45',w:['3:15','4:45','2:45'],e:'2:15 + 1 hour = 3:15, + 30 minutes = 3:45.'},
+        {q:'How many minutes between each number on the clock?',a:'5',w:['1','10','15'],e:'60 minutes ÷ 12 numbers = 5 minutes each.'},
+        {q:'You start homework at 5:20 and finish at 6:05. How long did it take?',a:'45 minutes',w:['15 minutes','1 hour 15 minutes','85 minutes'],e:'5:20 to 6:00 is 40 minutes, then 5 more to 6:05. 45 minutes.'}]},
+ {id:'measure',ico:'⚖️',title:'Mass & Volume',subject:'Math',desc:'Grams, kilograms, millilitres and litres.',
+  cards:[['Mass: how much stuff','Mass tells how much matter is in something. We measure it in grams (g) and kilograms (kg). 1 kilogram = 1,000 grams. A paperclip is about 1 g. A litre of water is about 1 kg. Nawaf is about 25 to 30 kg.'],
+   ['The balance scale','A balance scale compares two sides. Put an apple on one side and add known weights to the other until the beam is level. The weights add up to the apple\'s mass. Try it in the lab.'],
+   ['Volume: how much space a liquid fills','Volume is measured in millilitres (mL) and litres (L). 1 litre = 1,000 millilitres. A teaspoon holds about 5 mL. A juice box is 200 mL. A big water bottle is 1.5 L.'],
+   ['Reading a measuring jug','A measuring jug has marks on the side. Pour the liquid in, put the jug on a flat table, and read the mark at the top of the liquid with your eye level with it.'],
+   ['Estimating','Before measuring, guess. Is a watermelon closer to 300 g or 3 kg? (3 kg.) Is a bath closer to 100 mL or 100 L? (100 L.) Good estimates come from knowing a few reference objects by heart.']],
+  quiz:[{q:'How many grams are in 1 kilogram?',a:'1,000',w:['100','10','10,000'],e:'Kilo means thousand. 1 kg = 1,000 g.'},
+        {q:'Which is the best estimate for the mass of an apple?',a:'150 g',w:['15 g','1.5 kg','15 kg'],e:'An apple is about 150 grams. 1.5 kg would be ten apples.'},
+        {q:'A jug holds 1 litre. That is the same as…',a:'1,000 mL',w:['100 mL','10 mL','1,000 g'],e:'1 litre = 1,000 millilitres.'},
+        {q:'Which tool measures volume?',a:'A measuring jug',w:['A balance scale','A ruler','A thermometer'],e:'A measuring jug has millilitre marks on its side.'},
+        {q:'The scale balances with 500 g on one side and a book on the other. The book\'s mass is…',a:'500 g',w:['250 g','1 kg','It cannot be known'],e:'When balanced, both sides have equal mass.'}]},
+ {id:'graphs',ico:'📊',title:'Graphs & Data',subject:'Math',desc:'Picture graphs and bar graphs.',
+  cards:[['Data is information you collect','Ask everyone in class their favourite fruit and write down the answers. That list is data. A graph turns the list into a picture so you can see the answer at a glance.'],
+   ['Picture graphs','A picture graph uses one picture for each vote (or each 2, or each 5; the key tells you). Five apples in the apple row means five students chose apples. Always read the key first.'],
+   ['Bar graphs','A bar graph uses bars. The taller the bar, the bigger the number. The scale on the side tells the values. Bars make it easy to see which is biggest, smallest, and by how much.'],
+   ['Reading questions','Graphs answer questions: Which is the most popular? How many more chose bananas than grapes? How many students in total? Add the bars for the total; subtract two bars for the difference.'],
+   ['Making your own','Choose a question, ask people, tally the answers, draw the graph with a title, labels and a scale. Then write one sentence about what it shows. That is what scientists do with their data.']],
+  quiz:[{q:'In a bar graph, the tallest bar shows…',a:'The biggest number',w:['The smallest number','The first answer','Nothing special'],e:'Bar height matches the value, so tallest means most.'},
+        {q:'A picture graph key says each 🍎 = 2 students. The apple row has 4 apples. How many students?',a:'8',w:['4','2','6'],e:'4 pictures × 2 students each = 8 students.'},
+        {q:'Bananas got 5 votes and grapes got 2. How many more chose bananas?',a:'3',w:['7','2','5'],e:'5 − 2 = 3 more students chose bananas.'},
+        {q:'Apples 3, bananas 5, grapes 2, melon 4. How many students were asked?',a:'14',w:['12','15','5'],e:'3 + 5 + 2 + 4 = 14 students.'},
+        {q:'Which should every graph have?',a:'A title and labels',w:['Only colours','A photo','At least ten bars'],e:'Without a title and labels, nobody knows what the graph is about.'}]},
+ {id:'magnets',ico:'🧲',title:'Magnets & Electricity',subject:'Physics',desc:'Forces that work without touching.',
+  cards:[['A force without touching','Most pushes need contact: your foot touches the ball. Magnets are different. A magnet can pull a paper clip across the table without touching it. Gravity and static electricity also work at a distance.'],
+   ['Poles: N and S','Every magnet has two ends, a north pole and a south pole. Opposite poles pull together (attract). The same poles push apart (repel). Try both in the lab and watch the second magnet move on its own.'],
+   ['What is magnetic?','Magnets pull iron, steel, nickel and cobalt. They do not pull aluminium cans, copper coins, plastic, wood, paper or glass. Test things at home: the fridge door is steel; a drinks can is aluminium.'],
+   ['Static electricity','Rub a balloon on your hair and it sticks to the wall. Rubbing moves tiny charges onto the balloon, and the charged balloon pulls the wall without touching it. Lightning is a giant static spark between clouds and ground.'],
+   ['Magnets at work','Compasses point north because the Earth itself is a giant magnet. Electric motors, speakers, fridge doors, maglev trains and the cranes that lift scrap cars all use magnets.']],
+  quiz:[{q:'Two magnets are placed N to N. What happens?',a:'They push apart',w:['They pull together','Nothing','They get hot'],e:'Like poles repel. Only opposite poles (N to S) attract.'},
+        {q:'Which object will a magnet pick up?',a:'A steel paper clip',w:['A cork','A plastic spoon','A wooden block'],e:'Steel contains iron, which magnets attract. Cork, plastic and wood are not magnetic.'},
+        {q:'Why does a rubbed balloon stick to a wall?',a:'Static electricity pulls it',w:['It is sticky','Gravity pushes it','The wall is magnetic'],e:'Rubbing puts charge on the balloon, and the charge attracts the wall from a distance.'},
+        {q:'A compass needle points north because…',a:'The Earth is a giant magnet',w:['North is uphill','The needle is heavy','The wind blows it'],e:'The Earth has magnetic poles, and the compass needle lines up with them.'}]},
+ {id:'climates',ico:'🌍',title:'World Climates',subject:'Earth Science',desc:'Deserts, rainforests, poles and mountains.',
+  cards:[['Different places, different climates','Riyadh is hot and dry. London is mild and rainy. The Amazon is hot and wet. Antarctica is frozen. Each place has its own usual pattern of temperature and rain: its climate.'],
+   ['Near the equator it is hot','The middle of the Earth gets the strongest, most direct sunlight all year, so it is hot. Near the poles the sun stays low and weak, so it is cold. Distance from the equator is the biggest reason climates differ.'],
+   ['Rain makes the difference','Two hot places can be opposites. The Amazon rainforest gets rain nearly every day; the Sahara and the Arabian desert get almost none. Winds and mountains decide where the rain falls.'],
+   ['Higher is colder','Climb a mountain and it gets colder about 6°C for every 1,000 metres. That is why Abha in the Asir mountains is cool while Jeddah on the coast is hot, and why Kilimanjaro has snow on top even near the equator.'],
+   ['Climate shapes life','Desert plants have deep roots and tiny leaves. Rainforest trees grow huge. Polar animals have thick fat and fur. People build thick-walled houses in the desert and steep roofs where it snows.']],
+  quiz:[{q:'Which climate has rain almost every day and is hot all year?',a:'Tropical rainforest',w:['Desert','Polar','Temperate'],e:'Rainforests near the equator are hot and wet year-round.'},
+        {q:'Why is it hotter near the equator than near the poles?',a:'Sunlight hits it more directly',w:['It is closer to the sun','There are more deserts','The wind is warmer'],e:'Direct, strong sunlight all year makes the equator hot; the poles get low, weak light.'},
+        {q:'Abha is cooler than Jeddah mainly because…',a:'It is high in the mountains',w:['It is farther north','It has more people','It is by the sea'],e:'Higher places are colder, about 6°C for every 1,000 m of height.'},
+        {q:'Which place has a temperate climate with four clear seasons?',a:'London',w:['Riyadh','The Amazon','Antarctica'],e:'Temperate climates have warm summers, cold winters and rain in every season.'}]},
+ {id:'hazards',ico:'🌪️',title:'Weather Hazards',subject:'Earth Science',desc:'Sandstorms, floods, lightning and heat.',
+  cards:[['Weather can be dangerous','Most days the weather is just weather. Sometimes it becomes a hazard: something that can hurt people or damage homes. In Saudi Arabia the main ones are sandstorms, flash floods, lightning and extreme heat.'],
+   ['Flash floods in the desert','It seems strange, but floods are the deadliest weather in the Kingdom. Rain falls fast on hard dry ground and rushes into wadis. Never drive into flowing water: 30 cm can float a car.'],
+   ['Sandstorms','Strong winds lift dust into a wall hundreds of metres high. Visibility drops, breathing is hard, roads become dangerous. Stay indoors, close windows, and if driving, stop safely and turn on hazard lights.'],
+   ['Heat and lightning','Above 45°C the body struggles to cool itself: drink water, stay in shade, and rest in the hottest hours. In a thunderstorm, get inside a building or car and away from trees and poles.'],
+   ['Engineers reduce the damage','We cannot stop weather, but we can prepare. Weather warnings on phones, wadi bridges and drains, flood maps that say where not to build, shaded walkways, lightning rods on tall buildings. Every one is an engineering design solution.']],
+  quiz:[{q:'You see water flowing across the road after a storm. What should the driver do?',a:'Stop and turn around',w:['Drive through quickly','Drive through slowly','Wait in the water'],e:'Even shallow flowing water can float a car. Never drive into it.'},
+        {q:'Which is the deadliest weather hazard in Saudi Arabia?',a:'Flash floods',w:['Snow','Tornadoes','Hail'],e:'Sudden heavy rain on dry ground rushes into wadis and roads with little warning.'},
+        {q:'During a sandstorm you should…',a:'Stay indoors and close the windows',w:['Go outside to watch','Open windows for fresh air','Go for a run'],e:'Dust harms breathing and eyes; indoors with closed windows is safest.'},
+        {q:'Which is a way engineers reduce flood damage?',a:'Building bridges and drains over wadis',w:['Painting roads blue','Turning off the rain','Planting cactus'],e:'Drains and bridges let floodwater pass without cutting roads or entering homes.'},
+        {q:'In a thunderstorm the safest place is…',a:'Inside a building or car',w:['Under a tall tree','On top of a hill','In a swimming pool'],e:'Lightning strikes tall objects and open ground; buildings and cars protect you.'}]},
+ {id:'fairtest',ico:'🔬',title:'Fair Tests',subject:'Engineering',desc:'Change one thing. Measure. Repeat.',
+  cards:[['What is a fair test?','You want to know which paper plane flies farthest. If you throw one hard and one softly, the test is not fair: was it the plane or the throw? A fair test changes only ONE thing at a time.'],
+   ['Variables','Everything that could change is a variable: the plane\'s design, the paper, how hard you throw, the wind. You change one (the thing you are testing) and keep all the others exactly the same.'],
+   ['Measure, do not guess','"It went far" is not data. "It went 4.5 metres" is. Use a tape measure, a timer, a scale. Write every result down in a table so you can compare.'],
+   ['Repeat and average','Throw the same plane three times and you get three different distances. That is normal. Scientists repeat each test and take the average, so one lucky throw does not fool them.'],
+   ['Compare against the criteria','Before testing, decide what "best" means: farthest? straightest? cheapest? Engineers call these criteria. Then compare each design against the same criteria and choose the winner with evidence.']],
+  quiz:[{q:'You test two planes: a dart thrown hard and a glider thrown softly. Why is this unfair?',a:'Two things changed at once',w:['Gliders are not allowed','You need three planes','The paper was white'],e:'Design AND throw changed, so you cannot tell which caused the difference.'},
+        {q:'In a fair test, how many things should you change?',a:'One',w:['Two','All of them','None'],e:'Change only the thing you are testing; keep everything else the same.'},
+        {q:'Why repeat the same test three times?',a:'To average out lucky or unlucky tries',w:['To use more paper','Because three is a nice number','To make it take longer'],e:'Results vary a little each time. Repeating and averaging gives a trustworthy answer.'},
+        {q:'Which is data from a test?',a:'"The dart flew 5.2 metres"',w:['"The dart looked cool"','"I think the dart is best"','"The dart is red"'],e:'Data is a measurement you can write down and compare.'}]},
+ {id:'events',ico:'🎮',title:'Events & Variables',subject:'Tech / Coding',desc:'How games keep score.',
+  cards:[['Variables are boxes for numbers','A variable is a named box that holds a value that can change: score, lives, speed. When you catch a bug, the code does score = score + 1. The box now holds a bigger number.'],
+   ['Events start code','An event is something that happens: a click, a key press, a timer finishing, two things touching. Code waits for an event and then runs. "When the bug is clicked, add 1 to score" is an event rule.'],
+   ['Timers are events too','A timer that goes off every 3 seconds is an event. "When 3 seconds pass, lives = lives − 1." Games use timers for countdowns, enemy moves and animations.'],
+   ['If, then, with variables','Conditions and variables work together: "If lives = 0, then show Game Over." The program checks the variable and decides. Try it: let the lives run out in the lab.'],
+   ['Every game is made of these','Scratch, Minecraft, Roblox: under the hood, they are events (when clicked, when key pressed), variables (score, health), loops (forever: move enemy) and conditions (if touching wall). You already know all four.']],
+  quiz:[{q:'What is a variable?',a:'A named box that stores a value that can change',w:['A kind of bug','A picture','A type of loop'],e:'Variables like score and lives hold numbers the program can read and change.'},
+        {q:'"When the green flag is clicked, start the game." What kind of thing is the click?',a:'An event',w:['A variable','A loop','A fraction'],e:'An event is something that happens and triggers code to run.'},
+        {q:'score = score + 1 means…',a:'Add 1 to whatever score is now',w:['Score becomes 1','Score never changes','Delete the score'],e:'The program reads the current score, adds one, and puts it back in the box.'},
+        {q:'"If lives = 0, then show Game Over." This is a…',a:'Condition using a variable',w:['Timer event','Loop','Sequence only'],e:'The program checks the lives variable and chooses what to do.'}]},
+ {id:'design',ico:'🏗️',title:'Engineering Design',subject:'Engineering',desc:'Ask, imagine, plan, build, test, improve.',
+  cards:[['Engineers solve problems','An engineer is someone who designs things to solve a problem: a bridge, a water filter, a satellite. They do not guess. They follow a process so each try teaches them something.'],
+   ['Shape beats material','A flat sheet of paper bends easily. Fold the same sheet into a zigzag or roll it into tubes and it can hold a toy car. Nothing about the paper changed, only its shape. Test all three in the lab.'],
+   ['Test, then improve','A design that fails is not a failure. It tells you exactly what to fix. Engineers test early, watch what breaks first, change one thing, and test again. Real bridges are designed this way, just with computers and steel.']],
+  steps:[['Ask','What is the problem? Example: build a bridge from one sheet of paper that holds a toy car between two books.'],['Imagine','Sketch three different ideas. No idea is silly yet.'],['Plan','Pick the best idea. List materials: paper, tape, two books, a toy car.'],['Build','Make it. Fold, roll or layer the paper to make it strong.'],['Test','Put the car on. Did it hold? Add a second car.'],['Improve','What broke first? Change one thing and test again.']],
+  quiz:[{q:'What is the FIRST step of the engineering design process?',a:'Ask',w:['Build','Test','Improve'],e:'Before anything else, an engineer must understand the problem clearly.'},
+        {q:'Your bridge fell down. What should an engineer do next?',a:'Improve it and test again',w:['Give up','Hide it','Blame the car'],e:'A failed test is information. Change one thing and test again.'},
+        {q:'Folding paper into a triangle tube makes it…',a:'Stronger',w:['Weaker','Wetter','Louder'],e:'The shape spreads the weight along its edges instead of letting the flat sheet bend.'},
+        {q:'Why should you change only ONE thing before testing again?',a:'So you know what made the difference',w:['Because paper is expensive','To finish faster','Because rules say so'],e:'If you change three things and it works, you do not know which change helped.'}]}
+];
+const BADGES=[['🍎','Gravity Guru','forces'],['🧊','Matter Master','matter'],['⚙️','Machine Maker','machines'],['🌦️','Weather Watcher','earth'],['🦎','Desert Explorer','ecosystems'],['💻','Bug Buster','coding'],['🏗️','Master Engineer','design'],['🦋','Cycle Spotter','lifecycles'],['🧬','Trait Detective','traits'],['🐚','Fossil Hunter','fossils'],['🐜','Team Player','groups'],['✖️','Times Table Titan','multiply'],['🍫','Fraction Fan','fractions'],['📐','Tile Master','area'],['🕒','Time Keeper','time'],['⚖️','Measure Master','measure'],['📊','Data Detective','graphs'],['🧲','Magnet Master','magnets'],['🌍','Globe Trotter','climates'],['🌪️','Storm Ready','hazards'],['🔬','Fair Tester','fairtest'],['🎮','Game Coder','events'],['🏆','STEM Champion','ALL']];
+const XP_PER_Q=25,XP_BONUS=50,XP_LESSON=30;
+
+let state={progress:{},custom:{},time:{},log:[],savedAt:0};
+try{const s=localStorage.getItem('nawaf-stem');if(s)state=Object.assign(state,JSON.parse(s));}catch(e){}
+function save(){state.savedAt=Date.now();try{localStorage.setItem('nawaf-stem',JSON.stringify(state))}catch(e){}schedulePush()}
+function logEvent(type,mod,detail){state.log=state.log||[];state.log.push({t:Date.now(),type,mod,detail});if(state.log.length>300)state.log=state.log.slice(-300)}
+/* ---------- cloud sync (Google Sheet via Apps Script) ---------- */
+let SYNC={url:'',key:''};try{SYNC=Object.assign(SYNC,JSON.parse(localStorage.getItem('nawaf-sync')||'{}'))}catch(e){}
+let pushT=null,syncStatus='off',parentMode=false;
+function setSyncStatus(s,msg){syncStatus=s;const el=document.getElementById('syncStat');if(el)el.innerHTML=msg;const dot=document.getElementById('syncDot');if(dot)dot.className='syncDot '+s}
+function schedulePush(){if(!SYNC.url)return;clearTimeout(pushT);pushT=setTimeout(pushState,1500)}
+async function pushState(){if(!SYNC.url)return;try{setSyncStatus('busy','Saving to Drive…');const r=await fetch(SYNC.url,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({key:SYNC.key,state,device:navigator.platform})});const j=await r.json();if(j.error)throw new Error(j.error);setSyncStatus('ok','Saved to Drive '+new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}))}catch(e){setSyncStatus('err','Not saved to Drive: '+e.message)}}
+async function pullState(){if(!SYNC.url)return false;try{setSyncStatus('busy','Loading from Drive…');const r=await fetch(SYNC.url+'?key='+encodeURIComponent(SYNC.key)+'&t='+Date.now());const j=await r.json();if(j.error)throw new Error(j.error);
+  if(j.state&&(j.state.savedAt||0)>(state.savedAt||0)){state=Object.assign({progress:{},custom:{},time:{},log:[]},j.state);try{localStorage.setItem('nawaf-stem',JSON.stringify(state))}catch(e){}renderTop();renderMap();if(parentMode)renderParent();setSyncStatus('ok','Loaded from Drive (saved '+new Date(state.savedAt).toLocaleString('en-GB')+')');return true}
+  setSyncStatus('ok','Drive is up to date');if((state.savedAt||0)>(j.state?j.state.savedAt||0:0))pushState();return false}catch(e){setSyncStatus('err','Could not reach Drive: '+e.message);return false}}
+function saveSyncSettings(){SYNC={url:document.getElementById('syncUrl').value.trim(),key:document.getElementById('syncKey').value.trim()};try{localStorage.setItem('nawaf-sync',JSON.stringify(SYNC))}catch(e){}if(SYNC.url)pullState().then(()=>pushState());else setSyncStatus('off','Cloud sync is off')}
+function prog(id){return state.progress[id]||{status:'not_started',score:0,best:0,attempts:0}}
+function totalXP(){return Object.values(state.progress).reduce((a,p)=>a+(p.xp||0),0)}
+function questionsFor(m){return m.quiz.concat(state.custom[m.id]||[])}
+
+function renderTop(){
+  const xp=totalXP();document.getElementById('xpTotal').textContent=xp;
+  const lvl=Math.floor(xp/250)+1,into=xp%250;
+  document.getElementById('lvlFill').style.width=(into/2.5)+'%';
+  document.getElementById('lvlText').textContent='Level '+lvl+' · '+(250-into)+' XP to next';
+  const done=MODULES.filter(m=>prog(m.id).status==='completed').length;
+  document.getElementById('greet').textContent=done===0?'Ready for a mission, Nawaf?':done===MODULES.length?'All missions complete. Champion!':'Nice work, Nawaf. '+done+' of '+MODULES.length+' missions done.';
+}
+function renderMap(){
+  const map=document.getElementById('map');map.innerHTML='';
+  const order=['Physics','Physical Science','Engineering','Earth Science','Life Science','Math','Tech / Coding'];let last=null;
+  MODULES.map((m,i)=>[m,i]).sort((a,b)=>order.indexOf(a[0].subject)-order.indexOf(b[0].subject)||a[1]-b[1]).forEach(([m,i])=>{if(m.subject!==last){last=m.subject;const h=document.createElement('h3');h.className='mapGroup';h.textContent=m.subject;map.appendChild(h)}
+    const p=prog(m.id);const b=document.createElement('button');b.className='mission '+(p.status==='completed'?'done':'');
+    const stars=p.status==='completed'?'★'.repeat(Math.max(1,Math.round(p.best*3))).padEnd(3,'☆'):'☆☆☆';
+    b.innerHTML=`<span class="num">Mission ${i+1}</span><span class="ico">${m.ico}</span><h3>${m.title}</h3><p>${m.desc}</p><span class="pill">${p.status==='completed'?'Complete':p.status==='in_progress'?'In progress':m.subject}</span><span class="stars">${stars}</span>`;
+    b.onclick=()=>openModule(m);map.appendChild(b)});
+  const bd=document.getElementById('badges');bd.innerHTML='';const allDone=MODULES.every(m=>prog(m.id).status==='completed');
+  BADGES.forEach(([ic,name,id])=>{const e=document.createElement('div');const earned=id==='ALL'?allDone:prog(id).status==='completed';e.className='badge '+(earned?'earned':'');e.innerHTML=`<span class="b">${ic}</span>${name}`;bd.appendChild(e)});
+}
+
+let current=null,qi=0,correct=0,tStart=0,labEl=null;
+function openModule(m){
+  if(labEl&&labEl._stop)labEl._stop();
+  current=m;qi=0;correct=0;tStart=Date.now();logEvent('opened',m.id,m.title);
+  if(prog(m.id).status==='not_started'){state.progress[m.id]={status:'in_progress',score:0,best:0,attempts:0,xp:0};save();}
+  document.getElementById('mapView').hidden=true;document.getElementById('modView').hidden=false;
+  const body=document.getElementById('modBody');
+  body.innerHTML=`<span class="pill">${m.subject}</span><h2 style="font-size:1.7rem;margin:8px 0 6px">${m.ico} ${m.title}</h2><p class="sub">Step 1: play with the lab. Step 2: read the cards. Step 3: quiz.</p><div class="lab" id="lab"></div>
+  <div class="lesson"><h3 style="font-size:1.1rem;margin-bottom:6px">Learn it</h3><div class="dots" id="dots"></div><div id="lcard"></div><div class="row" style="margin-top:10px"><button class="btn ghost" id="prev">← Back</button><button class="btn" id="next">Next →</button></div></div>
+  <div id="stepsWrap"></div><div class="q" id="qArea" hidden></div>`;
+  labEl=body.querySelector('#lab');LABS[m.id](labEl);
+  let ci=0,seen=new Set([0]);const card=body.querySelector('#lcard'),dots=body.querySelector('#dots'),prev=body.querySelector('#prev'),next=body.querySelector('#next');
+  const show=()=>{const [t,txt]=m.cards[ci];card.innerHTML=`<div class="lcard"><h4>${ci+1}. ${t}</h4><p>${txt}</p></div>`;dots.innerHTML=m.cards.map((_,i)=>`<i class="${i===ci?'on':seen.has(i)?'seen':''}"></i>`).join('');prev.disabled=ci===0;next.textContent=ci===m.cards.length-1?(m.dnd?'Start sorting challenge →':'Start quiz →'):'Next →'};
+  prev.onclick=()=>{if(ci>0){ci--;show()}};
+  next.onclick=()=>{if(ci<m.cards.length-1){ci++;seen.add(ci);show()}else{body.querySelector('.lesson .row').hidden=true;if(!state.progress[m.id].lessonXP){state.progress[m.id].lessonXP=1;logEvent('lesson',m.id,'Read all '+m.cards.length+' cards');addXP(XP_LESSON);toast('📖 Lesson read: <b>+'+XP_LESSON+' XP</b>')}
+    if(m.steps)body.querySelector('#stepsWrap').innerHTML=`<h3 style="font-size:1.1rem;margin:16px 0 6px">The design process</h3><div class="steps">${m.steps.map(([t,d],i)=>`<div class="step"><b>${i+1}</b><div><b style="font-size:1rem">${t}</b><br>${d}</div></div>`).join('')}</div><div class="hint">Try the paper bridge tonight. Take a photo of your best design for the lab notebook.</div>`;
+    const qa=body.querySelector('#qArea');qa.hidden=false;if(m.dnd)renderDnd();else renderQuestion();qa.scrollIntoView({behavior:'smooth'})}};
+  show();window.scrollTo({top:0});
+}
+function renderDnd(){
+  const d=current.dnd;const area=document.getElementById('qArea');const items=d.items.slice().sort(()=>Math.random()-.5);
+  area.innerHTML=`<h3>Sort each thing into the right bin. Drag, or tap an item and then tap a bin.</h3><div class="dnd"><div class="pool" id="pool"></div><div class="bins" id="bins"></div></div><div class="row"><button class="btn" id="checkDnd">Check my sorting</button><span class="fb" id="dndFb"></span></div>`;
+  const pool=area.querySelector('#pool'),bins=area.querySelector('#bins');let sel=null;
+  items.forEach(([name,ans])=>{const c=document.createElement('button');c.className='chip';c.textContent=name;c.dataset.ans=ans;c.draggable=true;c.ondragstart=e=>{e.dataTransfer.setData('text',name);sel=c};c.onclick=()=>{area.querySelectorAll('.chip').forEach(x=>x.classList.remove('sel'));sel=c;c.classList.add('sel')};pool.appendChild(c)});
+  d.bins.forEach(b=>{const el=document.createElement('div');el.className='bin';el.innerHTML=`<h4>${b}</h4>`;el.dataset.bin=b;const drop=()=>{if(sel){el.appendChild(sel);sel.classList.remove('sel');sel=null;el.classList.remove('over')}};el.ondragover=e=>{e.preventDefault();el.classList.add('over')};el.ondragleave=()=>el.classList.remove('over');el.ondrop=e=>{e.preventDefault();drop()};el.onclick=drop;bins.appendChild(el)});
+  area.querySelector('#checkDnd').onclick=()=>{let ok=0,total=items.length;bins.querySelectorAll('.bin').forEach(b=>{b.classList.remove('ok','bad');let good=true;b.querySelectorAll('.chip').forEach(c=>{if(c.dataset.ans===b.dataset.bin)ok++;else good=false});b.classList.add(good?'ok':'bad')});
+    const fb=area.querySelector('#dndFb');if(pool.querySelectorAll('.chip').length){fb.className='fb no';fb.textContent='Some items are still in the pile.';return}
+    if(ok===total){logEvent('sort',current.id,'Sorted all '+total+' correctly');fb.className='fb ok';fb.textContent='Perfect sorting! +'+XP_BONUS+' XP';addXP(XP_BONUS);confetti();setTimeout(renderQuestion,900)}else{fb.className='fb no';fb.textContent=ok+' of '+total+' correct. Move the ones in red bins and try again.'}};
+}
+function renderQuestion(){
+  const qs=questionsFor(current);const area=document.getElementById('qArea');
+  if(qi>=qs.length)return finishModule(qs.length);
+  const q=qs[qi];const opts=[q.a].concat(q.w).sort(()=>Math.random()-.5);
+  area.innerHTML=`<h3>Question ${qi+1} of ${qs.length}: ${q.q}</h3><div class="opts">${opts.map(o=>`<button class="opt">${o}</button>`).join('')}</div><div class="fb" id="fb"></div><div id="why"></div>`;
+  let answered=false;
+  area.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{if(answered)return;answered=true;const fb=area.querySelector('#fb');
+    logEvent('quiz',current.id,(b.textContent===q.a?'✓ ':'✗ ')+q.q);if(b.textContent===q.a){b.classList.add('right');fb.className='fb ok';fb.textContent='Correct! +'+XP_PER_Q+' XP';correct++;addXP(XP_PER_Q)}
+    else{b.classList.add('wrong');area.querySelectorAll('.opt').forEach(o=>{if(o.textContent===q.a)o.classList.add('right')});fb.className='fb no';fb.textContent='Not quite. The answer is '+q.a+'.'}
+    if(q.e)area.querySelector('#why').innerHTML=`<div class="why">💡 ${q.e}</div>`;
+    const n=document.createElement('button');n.className='btn';n.style.marginTop='12px';n.textContent=qi+1<qs.length?'Next question →':'See my result →';n.onclick=()=>{qi++;renderQuestion()};area.appendChild(n)});
+}
+function addXP(n){const p=state.progress[current.id];p.xp=(p.xp||0)+n;save();renderTop();}
+function finishModule(n){
+  const p=state.progress[current.id];const pct=correct/n;p.attempts++;p.score=Math.round(pct*100);p.best=Math.max(p.best||0,pct);p.status='completed';p.updated=Date.now();logEvent('complete',current.id,correct+'/'+n+' correct, '+Math.round(pct*100)+'%');
+  state.time[current.id]=(state.time[current.id]||0)+Math.round((Date.now()-tStart)/1000);save();
+  const area=document.getElementById('qArea');
+  area.innerHTML=`<h3>Mission complete!</h3><p class="score">${correct} / ${n} correct · ${'★'.repeat(Math.max(1,Math.round(pct*3)))}</p><p class="sub">${pct===1?'Perfect score. You really understood this one.':pct>=.67?'Good work. Read the cards again for the ones you missed.':'Keep going. Play the lab again, then retry the quiz.'}</p><div class="row"><button class="btn" id="again">Try again</button><button class="btn ghost" id="toMap">Back to map</button></div>`;
+  area.querySelector('#again').onclick=()=>openModule(current);area.querySelector('#toMap').onclick=backToMap;
+  const badge=BADGES.find(b=>b[2]===current.id);toast(`${badge[0]} Badge earned: <b>${badge[1]}</b>`);confetti();renderTop();renderMap();
+}
+function backToMap(){if(labEl&&labEl._stop)labEl._stop();document.getElementById('modView').hidden=true;document.getElementById('mapView').hidden=false;renderMap();window.scrollTo({top:0})}
+document.getElementById('backBtn').onclick=backToMap;
+let tt;function toast(h){const t=document.getElementById('toast');t.innerHTML=h;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),3200)}
+function confetti(){const c=document.getElementById('confetti');c.innerHTML='';for(let i=0;i<60;i++){const s=document.createElement('i');s.style.left=Math.random()*100+'vw';s.style.background=['#C8102E','#141215','#D4A937','#8E0B22'][i%4];s.style.animationDelay=Math.random()*.6+'s';c.appendChild(s)}setTimeout(()=>c.innerHTML='',2600)}
+
+function renderParent(){
+  const done=MODULES.filter(m=>prog(m.id).status==='completed');const scores=done.map(m=>prog(m.id).score);const avg=scores.length?Math.round(scores.reduce((a,b)=>a+b,0)/scores.length):0;
+  const mins=Math.round(Object.values(state.time).reduce((a,b)=>a+b,0)/60);
+  document.getElementById('kpis').innerHTML=[[done.length+'/'+MODULES.length,'Missions complete'],[avg+'%','Average score'],[totalXP(),'Total XP'],[mins+' min','Time on missions']].map(([v,l])=>`<div class="kpi"><b>${v}</b><span>${l}</span></div>`).join('');
+  document.getElementById('ptable').innerHTML=`<table><thead><tr><th>Mission</th><th>Subject</th><th>Status</th><th>Best score</th><th>Attempts</th><th>Time</th><th>Last activity</th></tr></thead><tbody>${MODULES.map(m=>{const p=prog(m.id);const need=p.status==='completed'&&p.best<0.67;const tag=p.status==='completed'?(need?'<span class="tag need">Needs review</span>':'<span class="tag done">Completed</span>'):p.status==='in_progress'?'<span class="tag prog">In progress</span>':'<span class="tag">Not started</span>';
+    return `<tr><td>${m.ico} ${m.title}${(state.custom[m.id]||[]).length?' <span class="note">(+'+state.custom[m.id].length+' custom)</span>':''}</td><td>${m.subject}</td><td>${tag}</td><td class="n">${p.attempts?Math.round(p.best*100)+'%':'—'}</td><td class="n">${p.attempts||0}</td><td class="n">${Math.round((state.time[m.id]||0)/60)} min</td><td>${p.updated?new Date(p.updated).toLocaleDateString('en-GB'):'—'}</td></tr>`}).join('')}</tbody></table>`;
+  document.getElementById('qMod').innerHTML=MODULES.map(m=>`<option value="${m.id}">${m.title}</option>`).join('');
+  const L=(state.log||[]).slice(-40).reverse();const nm=id=>(MODULES.find(m=>m.id===id)||{title:id}).title;const ic={opened:'📂',lesson:'📖',sort:'🧩',quiz:'❓',complete:'🏁'};
+  document.getElementById('plog').innerHTML=L.length?`<table><thead><tr><th>When</th><th>What</th><th>Mission</th><th>Detail</th></tr></thead><tbody>${L.map(e=>`<tr><td class="n">${new Date(e.t).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}</td><td>${ic[e.type]||''} ${e.type}</td><td>${nm(e.mod)}</td><td>${e.detail||''}</td></tr>`).join('')}</tbody></table>`:'<span class="note">No activity yet.</span>';
+  document.getElementById('syncUrl').value=SYNC.url;document.getElementById('syncKey').value=SYNC.key;
+}
+document.getElementById('syncForm').onsubmit=e=>{e.preventDefault();saveSyncSettings()};
+document.getElementById('refreshBtn').onclick=()=>pullState();
+document.getElementById('addQ').onsubmit=e=>{e.preventDefault();const g=id=>document.getElementById(id).value.trim();const id=g('qMod');(state.custom[id]=state.custom[id]||[]).push({q:g('qText'),a:g('qA'),w:[g('qB'),g('qC')],e:g('qE')});save();e.target.reset();document.getElementById('addMsg').textContent='Added.';renderParent();};
+document.getElementById('resetBtn').onclick=()=>{const b=document.getElementById('resetBtn');if(b.dataset.arm){state={progress:{},custom:state.custom,time:{}};save();b.textContent='Reset all progress';delete b.dataset.arm;renderParent();renderTop();renderMap()}else{b.dataset.arm='1';b.textContent='Tap again to confirm'}};
+document.getElementById('modeBtn').onclick=()=>{parentMode=!parentMode;document.getElementById('parent').hidden=!parentMode;document.getElementById('student').hidden=parentMode;document.getElementById('modeBtn').textContent=parentMode?"Nawaf's view":'Parent view';if(parentMode)renderParent();window.scrollTo({top:0})};
+renderTop();renderMap();if(SYNC.url)pullState();else setSyncStatus('off','Cloud sync is off');
+</script>
+<script>if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});</script>
+</body>
+</html>
