@@ -852,6 +852,6 @@ document.getElementById('resetBtn').onclick=()=>{const b=document.getElementById
 document.getElementById('modeBtn').onclick=()=>{parentMode=!parentMode;document.getElementById('parent').hidden=!parentMode;document.getElementById('student').hidden=parentMode;document.getElementById('modeBtn').textContent=parentMode?"Nawaf's view":'Parent view';if(parentMode)renderParent();window.scrollTo({top:0})};
 renderTop();renderMap();if(SYNC.url)pullState();else setSyncStatus('off','Cloud sync is off');
 </script>
-<script>if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});</script>
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").then(r=>{r.update();setInterval(()=>r.update(),60*60*1000)}).catch(()=>{});let rl=false;navigator.serviceWorker.addEventListener("controllerchange",()=>{if(!rl){rl=true;location.reload()}})}</script>
 </body>
 </html>
