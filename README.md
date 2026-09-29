@@ -37,3 +37,6 @@ Edit `index.html`, push to `main`. The iPad picks up the new version the next ti
 - Lab notebook in Engineering missions: photos go to the Drive folder "Nawaf STEM Photos".
 - Track Tests: 20 questions per track, 80% earns a Certified badge; results in Parent view.
 - Parent view: progress, track tests, activity log, custom questions, cloud-sync status.
+
+## Family follow page
+`https://malmajed.github.io/nawaf-stem/follow.html` is a read-only page (Arabic) showing Nawaf's progress, badges, activity, tests and photos. Share this link with family; it cannot change anything.
