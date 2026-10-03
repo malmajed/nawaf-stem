@@ -1,10 +1,11 @@
-// Nawaf STEM Portal — Google Sheet backend (v2: photos, weekly email, large state)
+// Nawaf STEM Portal — Google Sheet backend (v3: photos, large state, online game rooms)
 const SECRET = 'nawaf-2026-red';
 const PHOTO_FOLDER = 'Nawaf STEM Photos';
 const CHUNK = 40000; // Sheets cell limit is 50,000 characters
 
 function doGet(e) {
   if (!e.parameter || e.parameter.key !== SECRET) return out({ error: 'bad key' });
+  if (e.parameter.game) return out({ game: readGame(e.parameter.game) });
   return out({ state: readState() });
 }
 
@@ -12,6 +13,23 @@ function doPost(e) {
   let body;
   try { body = JSON.parse(e.postData.contents); } catch (err) { return out({ error: 'bad json' }); }
   if (body.key !== SECRET) return out({ error: 'bad key' });
+
+  // --- online game rooms (Spelling Snakes & Ladders)
+  if (body.game) {
+    const lock = LockService.getScriptLock();
+    lock.waitLock(8000);
+    try {
+      const code = String(body.game).toUpperCase().slice(0, 4);
+      const data = body.data || {};
+      if (body.create) { data.v = 1; data.t = Date.now(); writeGame(code, data); return out({ ok: true, game: data }); }
+      const cur = readGame(code);
+      if (!cur) return out({ error: 'no room' });
+      if (cur.v !== body.v) return out({ ok: false, conflict: true, game: cur });
+      data.v = cur.v + 1; data.t = Date.now();
+      writeGame(code, data);
+      return out({ ok: true, game: data });
+    } finally { lock.releaseLock(); }
+  }
 
   // --- photo upload from the lab notebook
   if (body.photo) {
@@ -100,6 +118,18 @@ function weeklyReport() {
   <ul>${log.slice(-40).reverse().map(x => `<li>${Utilities.formatDate(new Date(x.t), 'Asia/Riyadh', 'EEE HH:mm')} · ${x.type} · ${x.mod} · ${x.detail || ''}</li>`).join('') || '<li>No activity logged.</li>'}</ul>
   <p style="color:#888">Sheet: ${SpreadsheetApp.getActiveSpreadsheet().getUrl()}</p></div>`;
   MailApp.sendEmail({ to: Session.getEffectiveUser().getEmail(), subject: "Nawaf's STEM week: " + done.length + ' missions, ' + right + '/' + quiz.length + ' quiz answers correct', htmlBody: html });
+}
+
+// ---- game rooms live in script properties (small JSON, auto-cleaned after a day)
+function writeGame(code, data) {
+  const ps = PropertiesService.getScriptProperties();
+  ps.setProperty('game_' + code, JSON.stringify(data));
+  const all = ps.getProperties(); const old = Date.now() - 864e5;
+  Object.keys(all).forEach(k => { if (k.startsWith('game_') && k !== 'game_' + code) { try { if ((JSON.parse(all[k]).t || 0) < old) ps.deleteProperty(k); } catch (e) { ps.deleteProperty(k); } } });
+}
+function readGame(code) {
+  const v = PropertiesService.getScriptProperties().getProperty('game_' + String(code).toUpperCase().slice(0, 4));
+  try { return v ? JSON.parse(v) : null; } catch (e) { return null; }
 }
 
 function getFolder() {
