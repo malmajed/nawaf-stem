@@ -41,6 +41,14 @@ Edit `index.html`, push to `main`. The iPad picks up the new version the next ti
 ## Family follow page
 `https://malmajed.github.io/nawaf-stem/follow.html` is a read-only page (Arabic) showing Nawaf's progress, badges, activity and tests. Configure the existing sync settings in Parent view on each authorized device first; the follow page uses those local settings. It cannot change progress.
 
+## Sync design (v41)
+
+- The web-app URL is built into the app and the family page; it is not a secret. The **key** is never in the source: it is entered once per device in Parent view (`nawaf-sync` in localStorage) and once per device on `follow.html` (`?k=KEY` link or the on-page prompt).
+- Keys live in Apps Script **Script properties**: `SYNC_SECRET` (read/write, for the app) and optional `READ_SECRET` (read-only, for the family page). Rotate by changing the property and re-entering the key on devices.
+- Every state write is **merged** on the server (`mergeState` in `Code.gs`, same rules as in `index.html`): completed status, best scores, XP, attempts, time, logs, tests, Spelling Bee boxes, Arena tokens/blooks and streaks are kept at their maximum, so a fresh or offline device can never erase progress. Only the Parent-view **Reset** (which stamps `resetAt`) replaces the stored state.
+- A device never pushes before its first successful pull (`nawaf-pulled`), which was the race that wiped the cloud state on 11 Oct 2026.
+- The append-only `activity` tab in the sheet and Google Sheets **version history** are the recovery sources if the `state` tab is ever damaged.
+
 ## Photo-feature removal deployment
 
 1. Before updating Apps Script, retain its existing sync key privately in the `SYNC_SECRET` Script property. The old key was publicly exposed: moving it is not rotation or security containment. Saving credential configuration requires action-time confirmation; do not put it in source control.

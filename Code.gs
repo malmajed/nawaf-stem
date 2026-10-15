@@ -1,9 +1,13 @@
-// Nawaf STEM Portal — Google Sheet backend (learning state and online game rooms)
-const SECRET = PropertiesService.getScriptProperties().getProperty('SYNC_SECRET');
+// Nawaf STEM Portal — Google Sheet backend v6 (learning state, merge-safe sync, online game rooms)
+// Setup: Project Settings → Script properties → SYNC_SECRET (write key, entered once per device in Parent view)
+//        and optionally READ_SECRET (read-only key for the family follow page).
+const PROPS = PropertiesService.getScriptProperties();
+const SECRET = PROPS.getProperty('SYNC_SECRET');
+const canRead = k => { const rk = PROPS.getProperty('READ_SECRET'); return !!SECRET && !!k && (k === SECRET || (!!rk && k === rk)); };
 const CHUNK = 40000; // Sheets cell limit is 50,000 characters
 
 function doGet(e) {
-  if (!SECRET || !e.parameter || e.parameter.key !== SECRET) return out({ error: 'bad key' });
+  if (!e.parameter || !canRead(e.parameter.key)) return out({ error: 'bad key' });
   if (e.parameter.game) return out({ game: readGame(e.parameter.game) });
   return out({ state: withoutPhotos(readState()) });
 }
@@ -33,10 +37,15 @@ function doPost(e) {
     } finally { lock.releaseLock(); }
   }
 
-  // --- progress state
+  // --- progress state: merged with what is stored, so a fresh or stale device can never erase progress
   if (!body.state || typeof body.state !== 'object' || Array.isArray(body.state)) return out({ error: 'missing state' });
-  const st = withoutPhotos(body.state);
-  writeState(st, body.device);
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  let st;
+  try {
+    st = mergeState(withoutPhotos(readState() || {}), withoutPhotos(body.state));
+    writeState(st, body.device);
+  } finally { lock.releaseLock(); }
   const log = sheet('activity');
   if (log.getLastRow() === 0) log.appendRow(['Time', 'Type', 'Mission', 'Detail']);
   const last = log.getLastRow() > 1 ? new Date(log.getRange(log.getLastRow(), 1).getValue()).getTime() : 0;
@@ -48,7 +57,7 @@ function doPost(e) {
     const p = st.progress[id];
     sum.appendRow([id, p.status, Math.round((p.best || 0) * 100), p.attempts || 0, p.xp || 0, Math.round(((st.time || {})[id] || 0) / 60), p.updated ? new Date(p.updated) : '']);
   });
-  return out({ ok: true });
+  return out({ ok: true, state: withoutPhotos(st) });
 }
 
 // ---- state stored as chunks down column A of the "state" sheet
@@ -152,3 +161,17 @@ function preserveStoredPhotos(previous, incoming) {
   if (history.length) next.log = (next.log || []).concat(history).sort((a, b) => a.t - b.t);
   return next;
 }
+
+// Same merge rules as the app (keep in sync with index.html).
+function mergeState(a,b){a=a||{};b=b||{};if((b.resetAt||0)>(a.resetAt||0)&&(b.resetAt||0)>(a.savedAt||0))return Object.assign({},b);if((a.resetAt||0)>(b.resetAt||0)&&(a.resetAt||0)>(b.savedAt||0))return Object.assign({},a);
+  const out=Object.assign({},a,b);const mx=(x,y)=>Math.max(x||0,y||0);const ST={completed:3,in_progress:2,not_started:1};
+  out.progress={};new Set([...Object.keys(a.progress||{}),...Object.keys(b.progress||{})]).forEach(id=>{const p=(a.progress||{})[id]||{},q=(b.progress||{})[id]||{};const n=(q.updated||0)>=(p.updated||0)?q:p;out.progress[id]=Object.assign({},p,q,{status:(ST[q.status]||0)>=(ST[p.status]||0)?q.status:p.status,best:mx(p.best,q.best),attempts:mx(p.attempts,q.attempts),xp:mx(p.xp,q.xp),score:n.score||0});if(p.lessonXP||q.lessonXP)out.progress[id].lessonXP=mx(p.lessonXP,q.lessonXP);if(p.updated||q.updated)out.progress[id].updated=mx(p.updated,q.updated)});
+  out.custom=Object.assign({},a.custom||{},b.custom||{});out.time={};new Set([...Object.keys(a.time||{}),...Object.keys(b.time||{})]).forEach(k=>out.time[k]=mx((a.time||{})[k],(b.time||{})[k]));
+  const seen={};out.log=[].concat(a.log||[],b.log||[]).filter(x=>{if(!x)return false;const k=x.t+'|'+x.type+'|'+x.mod;if(seen[k])return false;seen[k]=1;return true}).sort((x,y)=>x.t-y.t).slice(-200);
+  const ts={};out.tests=[].concat(a.tests||[],b.tests||[]).filter(x=>{if(!x)return false;const k=x.t+'|'+x.track;if(ts[k])return false;ts[k]=1;return true}).sort((x,y)=>x.t-y.t);
+  if(a.daily||b.daily){const d1=a.daily||{},d2=b.daily||{};const pk=(d2.date||'')>(d1.date||'')?d2:(d1.date||'')>(d2.date||'')?d1:((d2.i||0)>(d1.i||0)||(d2.done&&!d1.done))?d2:d1;out.daily=Object.assign({},pk,{streak:mx(d1.streak,d2.streak)})}
+  if(a.bee||b.bee){const x=a.bee||{},y=b.bee||{};const bee=Object.assign({},x,y);bee.words={};new Set([...Object.keys(x.words||{}),...Object.keys(y.words||{})]).forEach(w=>{const u=(x.words||{})[w]||{},v=(y.words||{})[w]||{};bee.words[w]=Object.assign({},u,v,{box:mx(u.box,v.box),seen:mx(u.seen,v.seen),right:mx(u.right,v.right)})});bee.best={};new Set([...Object.keys(x.best||{}),...Object.keys(y.best||{})]).forEach(k=>bee.best[k]=mx((x.best||{})[k],(y.best||{})[k]));bee.round=mx(x.round,y.round)||bee.round;if(!bee.list&&(x.list||y.list))bee.list=x.list||y.list;bee.lists=Object.assign({},x.lists||{},y.lists||{});bee.retry=Object.assign({},x.retry||{},y.retry||{});out.bee=bee}
+  if(a.arena||b.arena){const x=a.arena||{},y=b.arena||{};const ar=Object.assign({},x,y);ar.tokens=mx(x.tokens,y.tokens);ar.blooks=[...new Set([].concat(x.blooks||[],y.blooks||[]))];ar.stats={};new Set([...Object.keys(x.stats||{}),...Object.keys(y.stats||{})]).forEach(k=>{const u=(x.stats||{})[k],v=(y.stats||{})[k];ar.stats[k]=(typeof u==='object'&&u&&typeof v==='object'&&v)?Object.assign({},u,v,{games:mx(u.games,v.games),best:mx(u.best,v.best),wins:mx(u.wins,v.wins)}):(typeof u==='number'||typeof v==='number')?mx(u,v):(v!==undefined?v:u)});out.arena=ar}
+  if(a.sets||b.sets){const m={};[].concat(a.sets||[],b.sets||[]).forEach(s=>{if(!s||!s.id)return;const o=m[s.id];m[s.id]=(!o||(s.created||0)>=(o.created||0)||(s.qs||[]).length>(o.qs||[]).length)?Object.assign({},o||{},s,{plays:mx(o&&o.plays,s.plays)}):Object.assign({},s,o,{plays:mx(o.plays,s.plays)})});out.sets=Object.values(m).sort((x,y)=>(x.created||0)-(y.created||0))}
+  ['cards','tt','sud','hive','chess','robbuild','mq','beb','bal','g','writing'].forEach(k=>{const x=a[k],y=b[k];if(x===undefined||y===undefined)return;const sx=JSON.stringify(x).length,sy=JSON.stringify(y).length;out[k]=sy>=sx?y:x});
+  out.savedAt=mx(a.savedAt,b.savedAt);if(a.resetAt||b.resetAt)out.resetAt=mx(a.resetAt,b.resetAt);return out}
