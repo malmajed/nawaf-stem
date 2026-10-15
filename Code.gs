@@ -1,18 +1,20 @@
-// Nawaf STEM Portal — Google Sheet backend (v3: photos, large state, online game rooms)
-const SECRET = 'nawaf-2026-red';
-const PHOTO_FOLDER = 'Nawaf STEM Photos';
+// Nawaf STEM Portal — Google Sheet backend (learning state and online game rooms)
+const SECRET = PropertiesService.getScriptProperties().getProperty('SYNC_SECRET');
 const CHUNK = 40000; // Sheets cell limit is 50,000 characters
 
 function doGet(e) {
-  if (!e.parameter || e.parameter.key !== SECRET) return out({ error: 'bad key' });
+  if (!SECRET || !e.parameter || e.parameter.key !== SECRET) return out({ error: 'bad key' });
   if (e.parameter.game) return out({ game: readGame(e.parameter.game) });
-  return out({ state: readState() });
+  return out({ state: withoutPhotos(readState()) });
 }
 
 function doPost(e) {
   let body;
   try { body = JSON.parse(e.postData.contents); } catch (err) { return out({ error: 'bad json' }); }
-  if (body.key !== SECRET) return out({ error: 'bad key' });
+  if (!SECRET || body.key !== SECRET) return out({ error: 'bad key' });
+
+  // Reject old clients before they can overwrite learning state.
+  if (Object.prototype.hasOwnProperty.call(body, 'photo')) return out({ error: 'photo uploads disabled' });
 
   // --- online game rooms (Spelling Snakes & Ladders)
   if (body.game) {
@@ -20,7 +22,7 @@ function doPost(e) {
     lock.waitLock(8000);
     try {
       const code = String(body.game).toUpperCase().slice(0, 4);
-      const data = body.data || {};
+      const data = withoutPhotos(body.data || {});
       if (body.create) { data.v = 1; data.t = Date.now(); writeGame(code, data); return out({ ok: true, game: data }); }
       const cur = readGame(code);
       if (!cur) return out({ error: 'no room' });
@@ -31,23 +33,9 @@ function doPost(e) {
     } finally { lock.releaseLock(); }
   }
 
-  // --- photo upload from the lab notebook
-  if (body.photo) {
-    const m = body.photo.match(/^data:(image\/\w+);base64,(.+)$/);
-    if (!m) return out({ error: 'bad image' });
-    const folder = getFolder();
-    const name = Utilities.formatDate(new Date(), 'Asia/Riyadh', 'yyyy-MM-dd HH-mm') + ' ' + (body.name || body.mission || 'photo') + '.jpg';
-    const blob = Utilities.newBlob(Utilities.base64Decode(m[2]), m[1], name);
-    const file = folder.createFile(blob);
-    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
-    const log = sheet('activity');
-    if (log.getLastRow() === 0) log.appendRow(['Time', 'Type', 'Mission', 'Detail']);
-    log.appendRow([new Date(), 'photo', body.mission || '', file.getUrl()]);
-    return out({ ok: true, url: file.getUrl(), id: file.getId() });
-  }
-
   // --- progress state
-  const st = body.state || {};
+  if (!body.state || typeof body.state !== 'object' || Array.isArray(body.state)) return out({ error: 'missing state' });
+  const st = withoutPhotos(body.state);
   writeState(st, body.device);
   const log = sheet('activity');
   if (log.getLastRow() === 0) log.appendRow(['Time', 'Type', 'Mission', 'Detail']);
@@ -65,6 +53,8 @@ function doPost(e) {
 
 // ---- state stored as chunks down column A of the "state" sheet
 function writeState(st, device) {
+  // Keep historical media in storage, but never return or accept it via sync.
+  st = preserveStoredPhotos(readState() || {}, st);
   const sh = sheet('state');
   const s = JSON.stringify(st);
   const parts = [];
@@ -89,7 +79,7 @@ function setupWeeklyTrigger() {
   weeklyReport(); // send one now so you can see it works
 }
 function weeklyReport() {
-  const st = readState() || {};
+  const st = withoutPhotos(readState()) || {};
   const prog = st.progress || {};
   const week = Date.now() - 7 * 24 * 3600 * 1000;
   const log = (st.log || []).filter(x => x.t > week);
@@ -129,17 +119,36 @@ function writeGame(code, data) {
 }
 function readGame(code) {
   const v = PropertiesService.getScriptProperties().getProperty('game_' + String(code).toUpperCase().slice(0, 4));
-  try { return v ? JSON.parse(v) : null; } catch (e) { return null; }
+  try { return v ? withoutPhotos(JSON.parse(v)) : null; } catch (e) { return null; }
 }
 
-function getFolder() {
-  const it = DriveApp.getFoldersByName(PHOTO_FOLDER);
-  return it.hasNext() ? it.next() : DriveApp.createFolder(PHOTO_FOLDER);
-}
 function sheet(name) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   return ss.getSheetByName(name) || ss.insertSheet(name);
 }
 function out(o) {
   return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON);
+}
+
+// A projection for transport/rendering; original local and server records stay intact.
+function withoutPhotos(value) {
+  if (Array.isArray(value)) return value.filter(x => !x || x.type !== 'photo').map(withoutPhotos);
+  if (!value || typeof value !== 'object') return value;
+  const result = {};
+  Object.keys(value).forEach(key => {
+    if (!['photo', 'photos', 'thumb', 'img'].includes(key)) result[key] = withoutPhotos(value[key]);
+  });
+  return result;
+}
+
+function preserveStoredPhotos(previous, incoming) {
+  const next = withoutPhotos(incoming);
+  if (previous.photos) next.photos = previous.photos;
+  if (next.sets && previous.sets) next.sets.forEach(set => {
+    const old = previous.sets.find(x => x.id === set.id);
+    if (old && old.img) set.img = old.img;
+  });
+  const history = (previous.log || []).filter(x => x.type === 'photo');
+  if (history.length) next.log = (next.log || []).concat(history).sort((a, b) => a.t - b.t);
+  return next;
 }
