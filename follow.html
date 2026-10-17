@@ -51,7 +51,7 @@ let followSync={};try{followSync=JSON.parse(localStorage.getItem('nawaf-sync')||
 let URL_=followSync.url||URL_DEFAULT,KEY=followSync.key||'';try{KEY=KEY||localStorage.getItem('nawaf-follow-key')||''}catch(e){}
 const qk=new URLSearchParams(location.search).get('k');if(qk){KEY=qk;try{localStorage.setItem('nawaf-follow-key',qk)}catch(e){}history.replaceState(null,'',location.pathname)}
 function askKey(){document.getElementById('greet').innerHTML='أدخل مفتاح المتابعة مرة واحدة على هذا الجهاز · Enter the family key once on this device:<br><form id="kf" style="margin-top:8px;display:flex;gap:6px"><input id="kin" type="password" placeholder="key" style="flex:1;padding:8px;border-radius:8px;border:1px solid var(--line)"><button class="cta" style="margin:0">OK</button></form>';document.getElementById('kf').onsubmit=e=>{e.preventDefault();KEY=document.getElementById('kin').value.trim();try{localStorage.setItem('nawaf-follow-key',KEY)}catch(e){}load()}}
-const TRACKS=[['stem','🔬','العلوم والهندسة',42],['math','➗','الرياضيات',30],['ai','🤖','الذكاء الاصطناعي',15],['robot','🦾','الروبوتات',15],['chess','♟️','الشطرنج',15],['bebras','🦫','تحدي بيبراس',11],['mawhiba','🎓','مقياس موهبة',7],['arena','🎮','ساحة بلوكيت',1],['kahoot','🎉','عرض كاهوت',1],['ela','📚','الإنجليزية',33],['social','🌍','الاجتماعيات',16],['health','❤️','الصحة',8],['arabic','ع','العربية',16],['islamic','🕌','التربية الإسلامية',12]];
+const TRACKS=[['stem','🔬','العلوم والهندسة',42],['math','➗','الرياضيات',29],['logic','🧩','ألغاز المنطق',1],['ai','🤖','الذكاء الاصطناعي',15],['robot','🦾','الروبوتات',15],['chess','♟️','الشطرنج',15],['bebras','🦫','تحدي بيبراس',11],['mawhiba','🎓','مقياس موهبة',7],['arena','🎮','ساحة بلوكيت',1],['kahoot','🎉','عرض كاهوت',1],['ela','📚','الإنجليزية',33],['social','🌍','الاجتماعيات',16],['health','❤️','الصحة',8],['arabic','ع','العربية',16],['islamic','🕌','التربية الإسلامية',12]];
 const TRACK_OF={};
 // mission id -> track (kept in sync with the app)
 'forces matter machines earth ecosystems coding design lifecycles traits fossils groups magnets climates hazards fairtest events daynight solar rockets satellites gears engineers plants animals lightsound rocks body'.split(' ').forEach(i=>TRACK_OF[i]='stem');
@@ -70,7 +70,7 @@ const TRACK_OF={};
 'g4chkq g4chkr g4chpawn g4chmate2 g4chitalian'.split(' ').forEach(i=>TRACK_OF[i]='chess');
 'bebFollow bebPattern bebLogic bebSort bebPath bebCode bebStack bebPixels bebCount bebDebug bebMock'.split(' ').forEach(i=>TRACK_OF[i]='bebras');
 'mqVerbal mqMath mqSpatial mqMech mqFlex mqSkills mqMock'.split(' ').forEach(i=>TRACK_OF[i]='mawhiba');
-TRACK_OF.arena='arena';TRACK_OF.kahoot='kahoot';
+TRACK_OF.arena='arena';TRACK_OF.sudoku='logic';TRACK_OF.kahoot='kahoot';
 'g4arsent g4armubtada g4arfael g4arjam g4arhamza g4artarqeem g4arread g4arwrite'.split(' ').forEach(i=>TRACK_OF[i]='arabic');
 'g4nutrition g4systems g4firstaid g4sleep'.split(' ').forEach(i=>TRACK_OF[i]='health');
 'g4latlong g4scale g4regions g4unify g4govt g4trade g4cultures g4centuries'.split(' ').forEach(i=>TRACK_OF[i]='social');
